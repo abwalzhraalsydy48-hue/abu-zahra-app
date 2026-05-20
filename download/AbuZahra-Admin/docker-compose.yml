@@ -1,0 +1,29 @@
+# Abu-Zahra Admin Server v3.4 - Docker Deployment
+
+version: '3.8'
+
+services:
+  abuzahra-server:
+    build: .
+    container_name: abuzahra-server
+    restart: always
+    ports:
+      - "8443:8443"
+    environment:
+      - FIREBASE_PRIVATE_KEY_ID=${FIREBASE_PRIVATE_KEY_ID:-}
+      - FIREBASE_PRIVATE_KEY=${FIREBASE_PRIVATE_KEY:-}
+      - FIREBASE_CLIENT_EMAIL=${FIREBASE_CLIENT_EMAIL:-}
+      - FIREBASE_CLIENT_ID=${FIREBASE_CLIENT_ID:-}
+      - FIREBASE_CLIENT_X509_CERT_URL=${FIREBASE_CLIENT_X509_CERT_URL:-}
+      - SSL_CERT=/etc/ssl/cert.pem
+      - SSL_KEY=/etc/ssl/key.pem
+    volumes:
+      - ./logs:/app/logs
+      - ./cert.pem:/etc/ssl/cert.pem:ro
+      - ./key.pem:/etc/ssl/key.pem:ro
+    networks:
+      - abuzahra-net
+
+networks:
+  abuzahra-net:
+    driver: bridge
