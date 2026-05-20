@@ -1,9 +1,9 @@
 package com.abuzahra.admin.executor
 
-import android.Manifest
+import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
-import android.hardware.camera2.CameraAccessException
+import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
 import android.media.AudioAttributes
 import android.media.AudioManager
@@ -12,11 +12,8 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.provider.Settings
+import android.telephony.SmsManager
 import android.util.Log
-import android.view.WindowManager
-import java.io.File
-import java.text.SimpleDateFormat
-import java.util.*
 
 object ControlExecutor {
 
@@ -88,21 +85,19 @@ object ControlExecutor {
 
     // ===== FRONT CAMERA =====
     fun frontCamera(context: Context): Map<String, Any> {
-        return takePhoto(context, CameraManager.CameraCallback.CAMERA_FACING_FRONT)
+        return takePhoto(context, CameraCharacteristics.LENS_FACING_FRONT)
     }
 
     // ===== BACK CAMERA =====
     fun backCamera(context: Context): Map<String, Any> {
-        return takePhoto(context, CameraManager.CameraCallback.CAMERA_FACING_BACK)
+        return takePhoto(context, CameraCharacteristics.LENS_FACING_BACK)
     }
 
     private fun takePhoto(context: Context, facing: Int): Map<String, Any> {
         return try {
-            // Camera2 API needs a SurfaceTexture and handler
-            // This is a simplified version - full implementation requires CameraCaptureSession
             mapOf(
                 "message" to "Camera capture initiated",
-                "facing" to if (facing == CameraManager.CameraCallback.CAMERA_FACING_FRONT) "front" else "back",
+                "facing" to if (facing == CameraCharacteristics.LENS_FACING_FRONT) "front" else "back",
                 "note" to "Full camera implementation requires Camera2 API with preview and capture session"
             )
         } catch (e: Exception) {
