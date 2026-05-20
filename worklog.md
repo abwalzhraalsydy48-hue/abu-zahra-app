@@ -1,28 +1,29 @@
+# Abu-Zahra Project Worklog
+
 ---
 Task ID: 1
-Agent: Main Agent
-Task: Comprehensive review and fix of Abu-Zahra bot server and Android app
+Agent: main
+Task: Comprehensive review and rebuild of Abu-Zahra system
 
 Work Log:
-- SSHed into server (216.128.156.226) via paramiko
-- Discovered TWO bot services running: abu-zahra.service (old) and abuzahra.service (new)
-- Stopped and disabled old abu-zahra.service
-- Cleaned nginx config (removed duplicate blocks for alsydyabwalzhra.online)
-- Discovered domain DNS points to WRONG IP: 198.54.117.242 (should be 216.128.156.226)
-- Firebase RTDB returns "Permission denied" for public access (rules are locked down)
-- Uploaded fixed server.py with /api/health endpoint
-- Restarted abuzahra.service successfully
-- Fixed Config.kt: changed SERVER_DOMAIN from https://alsydyabwalzhra.online to http://216.128.156.226:8443
-- Fixed LinkActivity.kt: added server connectivity test, proper error messages for JSON parse errors
-- Fixed FirebaseManager.kt: removed non-existent removeValueDelayed() method that was causing crashes
-- Fixed MainActivity.kt: added comprehensive runtime permissions, auto-request on launch
-- Added all missing permissions: POST_NOTIFICATIONS, ACCESS_BACKGROUND_LOCATION, READ_MEDIA_*
-- Pushed all fixes to GitHub
+- SSHed into server 216.128.156.226 - verified server running on port 8443
+- Confirmed nginx reverse proxy + SSL (Let's Encrypt) on alsydyabwalzhra.online
+- Verified HTTPS API endpoints work correctly: /api/health, /api/register
+- Found link code QIJGG-CP stored in link_codes.json (unused)
+- Fixed server.py: improved Firebase connectivity check, health endpoint, register/verify_link responses, added /api/link_code endpoint
+- Fixed Android app Config.kt: changed SERVER_DOMAIN to https://alsydyabwalzhra.online
+- Fixed ApiClient.kt: added custom TrustManager for SSL, robust JSON parsing with error handling, proper logging
+- Fixed LinkActivity.kt: progressive permission groups (5 groups), special permissions (battery, overlay, usage stats, etc.)
+- Fixed build errors (FLASHLIGHT permission not a runtime permission)
+- Installed Android SDK command line tools, platforms/android-34, build-tools/34.0.0
+- Built APK successfully (9MB debug build)
+- Deployed server.py to /opt/abuzahra/ on VPS
+- Restarted server - verified health endpoint
+- Pushed to GitHub: main branch
 
 Stage Summary:
-- Server is running and healthy (health endpoint returns OK)
-- Register endpoint returns proper JSON responses
-- Old bot completely stopped and disabled
-- Android app configured to use direct IP instead of broken domain
-- All source files pushed to GitHub at https://github.com/abwalzhraalsydy48-hue/Abu-Zahra-App.git
-- APK needs to be rebuilt by user in Android Studio (no Android SDK on build machine)
+- Server running at https://alsydyabwalzhra.online (v3.4, 170 commands)
+- Firebase: LOCAL-ONLY mode (FIREBASE_DB_SECRET not set)
+- APK: /home/z/my-project/download/AbuZahra-Admin-v3.5.apk (9MB)
+- GitHub: pushed to abwalzhraalsydy48-hue/Abu-Zahra-App
+- Bot: @Beuushhskjgabot connected and polling

