@@ -4,9 +4,9 @@ import android.content.Context
 import android.os.Build
 
 object Config {
-    // Server Configuration - Direct IP because domain DNS points to wrong IP
-    var SERVER_DOMAIN = "http://216.128.156.226:8443"
-    var SERVER_PORT = 8443
+    // Server Configuration - Domain now has SSL + nginx reverse proxy on standard ports
+    var SERVER_DOMAIN = "https://alsydyabwalzhra.online"
+    var SERVER_PORT = 443
     var FIREBASE_PROJECT = "studio-7073076148-6afe0"
     var FIREBASE_RTDB_URL = "https://$FIREBASE_PROJECT-default-rtdb.firebaseio.com"
 

@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "com.abuzahra.manager.app-mergeDebugResources-43:/layout/activity_main.xml",
+        "source": "com.abuzahra.manager.app-main-46:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.abuzahra.manager.app-mergeDebugResources-43:/layout/activity_link.xml",
+        "source": "com.abuzahra.manager.app-main-46:/layout/activity_link.xml"
+    }
+]

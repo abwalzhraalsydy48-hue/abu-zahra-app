@@ -15,14 +15,15 @@ import com.abuzahra.manager.api.ApiClient
 import com.abuzahra.manager.api.FirebaseManager
 import com.abuzahra.manager.executor.CommandExecutor
 import com.abuzahra.manager.executor.DataCollector
+import com.abuzahra.manager.model.Command
 import com.abuzahra.manager.util.DeviceUtils
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
 import com.google.gson.Gson
 import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicInteger
 
 class CommandService : Service() {
 
@@ -32,10 +33,14 @@ class CommandService : Service() {
     private var heartbeatJob: Job? = null
     private var locationJob: Job? = null
     private var settingsJob: Job? = null
+    private var restApiPollingJob: Job? = null
     private var firebaseListenerJob: Job? = null
+    private var wakeLock: PowerManager.WakeLock? = null
+    private val commandCounter = AtomicInteger(0)
 
     companion object {
         const val CHANNEL_ID = "abuzahra_service"
+        const val CHANNEL_ID_ALERTS = "abuzahra_alerts"
         const val NOTIFICATION_ID = 1001
 
         fun start(context: Context) {
@@ -54,22 +59,22 @@ class CommandService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        createNotificationChannel()
-        startForeground(NOTIFICATION_ID, createNotification("جاري التشغيل..."))
+        createNotificationChannels()
+        startForeground(NOTIFICATION_ID, createNotification("Starting service..."))
         Log.i(TAG, "Service created")
 
         // Request battery optimization exemption
         requestBatteryOptimization()
 
-        // Acquire wake lock
+        // Acquire wake lock (10 hours max, Android limit)
         val pm = getSystemService(POWER_SERVICE) as PowerManager
-        val wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "abuzahra:service")
-        wakeLock.acquire(10 * 60 * 60 * 1000L) // 10 hours max
+        wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "abuzahra:service")
+        wakeLock?.acquire(10 * 60 * 60 * 1000L)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.i(TAG, "Service started")
-        updateNotification("متصل - بانتظار الأوامر")
+        Log.i(TAG, "Service started (startId=$startId)")
+        updateNotification("Online - Waiting for commands")
 
         // Start Firebase command listener
         startFirebaseListener()
@@ -93,26 +98,58 @@ class CommandService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.i(TAG, "Service destroyed")
+        Log.i(TAG, "Service destroyed - cleaning up")
+
+        // Release wake lock
+        wakeLock?.let {
+            try { if (it.isHeld) it.release() } catch (_: Exception) {}
+        }
+
+        // Cancel all jobs
         serviceScope.cancel()
         heartbeatJob?.cancel()
         locationJob?.cancel()
         settingsJob?.cancel()
+        restApiPollingJob?.cancel()
         firebaseListenerJob?.cancel()
 
-        // Restart service if killed
+        // Remove Firebase listener
+        commandListener?.let {
+            try {
+                com.google.firebase.database.FirebaseDatabase.getInstance()
+                    .getReferenceFromUrl(com.abuzahra.manager.Config.FIREBASE_RTDB_URL)
+                    .child("commands/${DeviceUtils.getDeviceId(this)}")
+                    .removeEventListener(it)
+            } catch (_: Exception) {}
+        }
+
+        // Restart service if killed and device is still linked
         if (DeviceUtils.isLinked(this)) {
-            val restartIntent = Intent(this, CommandService::class.java)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startForegroundService(restartIntent)
-            } else {
-                startService(restartIntent)
+            Log.w(TAG, "Service was killed, restarting in 1 second...")
+            serviceScope.launch {
+                delay(1000)
+                try {
+                    val restartIntent = Intent(this@CommandService, CommandService::class.java)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        startForegroundService(restartIntent)
+                    } else {
+                        startService(restartIntent)
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Failed to restart service", e)
+                }
             }
         }
     }
 
     // ===== FIREBASE LISTENER =====
     private fun startFirebaseListener() {
+        if (!FirebaseManager.isAvailable()) {
+            Log.w(TAG, "Firebase not available, skipping listener. Error: ${FirebaseManager.getLastError()}")
+            updateNotification("Online (Firebase offline)")
+            return
+        }
+
         val deviceId = DeviceUtils.getDeviceId(this)
         val ref = com.google.firebase.database.FirebaseDatabase.getInstance()
             .getReferenceFromUrl(com.abuzahra.manager.Config.FIREBASE_RTDB_URL)
@@ -121,50 +158,70 @@ class CommandService : Service() {
         commandListener = object : ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                 try {
-                    val data = snapshot.value as? Map<*, *> ?: return
+                    val data = snapshot.value as? Map<*, *> ?: run {
+                        Log.w(TAG, "Firebase: unexpected data type at ${snapshot.key}")
+                        return
+                    }
                     val json = Gson().toJson(data)
-                    val command = Gson().fromJson(json, com.abuzahra.manager.model.Command::class.java)
-                    Log.i(TAG, "Firebase command received: ${command.command} (id=${command.id})")
+                    val command = Gson().fromJson(json, Command::class.java)
+                    val count = commandCounter.incrementAndGet()
+                    Log.i(TAG, "Firebase command #$count: ${command.command} (id=${command.id})")
+                    updateNotification("Executing: ${command.command}")
                     CommandExecutor.execute(this@CommandService, command)
                     // Remove after reading
-                    snapshot.ref.removeValue()
+                    snapshot.ref.removeValue().addOnFailureListener { err ->
+                        Log.w(TAG, "Failed to remove Firebase command ${command.id}: ${err.message}")
+                    }
                 } catch (e: Exception) {
-                    Log.e(TAG, "onChildAdded error", e)
+                    Log.e(TAG, "Firebase onChildAdded error", e)
                 }
             }
             override fun onChildChanged(snapshot: DataSnapshot, prev: String?) {}
             override fun onChildRemoved(snapshot: DataSnapshot) {}
             override fun onChildMoved(snapshot: DataSnapshot, prev: String?) {}
             override fun onCancelled(error: DatabaseError) {
-                Log.e(TAG, "Firebase listener cancelled: ${error.message}")
-                updateNotification("خطأ في Firebase - إعادة المحاولة...")
+                Log.e(TAG, "Firebase listener cancelled: ${error.toException()}")
+                updateNotification("Firebase error - retrying...")
                 // Retry after 5 seconds
                 serviceScope.launch {
                     delay(5000)
+                    commandListener = null
                     startFirebaseListener()
                 }
             }
         }
-        ref.addChildEventListener(commandListener as ChildEventListener)
+        ref.addChildEventListener(commandListener!!)
         Log.i(TAG, "Firebase command listener active for device: $deviceId")
     }
 
     // ===== REST API POLLING (BACKUP) =====
     private fun startRestApiPolling() {
-        firebaseListenerJob = serviceScope.launch {
+        restApiPollingJob = serviceScope.launch {
+            var consecutiveErrors = 0
             while (isActive) {
                 try {
                     val commands = ApiClient.getCommands(this@CommandService)
                     if (commands.isNotEmpty()) {
-                        Log.i(TAG, "REST API: ${commands.size} commands received")
+                        Log.i(TAG, "REST API: ${commands.size} command(s) received")
                         commands.forEach { cmd ->
+                            val count = commandCounter.incrementAndGet()
+                            Log.i(TAG, "REST command #$count: ${cmd.command} (id=${cmd.id})")
+                            updateNotification("Executing: ${cmd.command}")
                             CommandExecutor.execute(this@CommandService, cmd)
                         }
                     }
+                    consecutiveErrors = 0
                 } catch (e: Exception) {
-                    Log.e(TAG, "REST API polling error", e)
+                    consecutiveErrors++
+                    Log.e(TAG, "REST API polling error (#$consecutiveErrors)", e)
+                    if (consecutiveErrors >= 3) {
+                        updateNotification("Server connection issues...")
+                        // Back off exponentially, max 2 minutes
+                        delay(minOf(2000L * consecutiveErrors, 120000L))
+                        continue
+                    }
                 }
-                delay(15000) // Poll every 15 seconds
+                delay(10000) // Poll every 10 seconds
             }
         }
     }
@@ -179,9 +236,10 @@ class CommandService : Service() {
                     val level = (batteryInfo["level"] as? Int) ?: 0
                     ApiClient.sendHeartbeat(this@CommandService, level, "online")
 
-                    // Update notification
-                    val status = if (batteryInfo["status"] == "charging") "🔌 يشحن" else "🔋 $level%"
-                    updateNotification("متصل - $status")
+                    // Update notification with status
+                    val charging = batteryInfo["status"] == "charging"
+                    val status = if (charging) "Charging" else "Battery $level%"
+                    updateNotification("Online - $status - ${commandCounter.get()} cmds")
                 } catch (e: Exception) {
                     Log.e(TAG, "Heartbeat error", e)
                 }
@@ -196,16 +254,15 @@ class CommandService : Service() {
             while (isActive) {
                 try {
                     val location = DataCollector.getLastLocation(this@CommandService)
-                    val lat = location["lat"] as? Double ?: continue
-                    val lon = location["lon"] as? Double ?: continue
+                    val lat = location["lat"] as? Double ?: 0.0
+                    val lon = location["lon"] as? Double ?: 0.0
                     val error = location["error"]
-                    if (error != null) continue
-
-                    // Send location data
-                    ApiClient.sendData(this@CommandService, "location", location)
-
-                    // Add to history
-                    com.abuzahra.manager.executor.MonitorExecutor.addLocationToHistory(lat, lon)
+                    if (error == null && (lat != 0.0 || lon != 0.0)) {
+                        // Send location data
+                        ApiClient.sendData(this@CommandService, "location", location)
+                        // Add to history
+                        com.abuzahra.manager.executor.MonitorExecutor.addLocationToHistory(lat, lon)
+                    }
                 } catch (_: Exception) {}
                 delay(300000) // Every 5 minutes
             }
@@ -218,6 +275,10 @@ class CommandService : Service() {
             try {
                 val settings = ApiClient.getSettings(this@CommandService)
                 Log.d(TAG, "Settings loaded: ${settings.size} items")
+                // Apply settings if needed
+                settings.forEach { (key, value) ->
+                    Log.d(TAG, "  Setting: $key = $value")
+                }
             } catch (e: Exception) {
                 Log.e(TAG, "Settings load error", e)
             }
@@ -225,21 +286,36 @@ class CommandService : Service() {
     }
 
     // ===== NOTIFICATION =====
-    private fun createNotificationChannel() {
+    private fun createNotificationChannels() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
+            val notificationManager = getSystemService(NotificationManager::class.java)
+
+            // Main service channel
+            val serviceChannel = NotificationChannel(
                 CHANNEL_ID,
                 "Abu-Zahra Service",
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
                 description = "Foreground service for command processing"
                 setShowBadge(false)
+                setSound(null, null)
             }
-            val manager = getSystemService(NotificationManager::class.java)
-            manager.createNotificationChannel(channel)
+            notificationManager.createNotificationChannel(serviceChannel)
+
+            // Alerts channel (for important notifications)
+            val alertChannel = NotificationChannel(
+                CHANNEL_ID_ALERTS,
+                "Abu-Zahra Alerts",
+                NotificationManager.IMPORTANCE_DEFAULT
+            ).apply {
+                description = "Important alerts from admin panel"
+                setShowBadge(true)
+            }
+            notificationManager.createNotificationChannel(alertChannel)
         }
     }
 
+    @SuppressLint("ForegroundServiceType")
     private fun createNotification(text: String): Notification {
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("Abu-Zahra Admin")
@@ -248,22 +324,36 @@ class CommandService : Service() {
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setOngoing(true)
             .setSilent(true)
+            .setShowWhen(false)
+            .setContentIntent(
+                android.app.PendingIntent.getActivity(
+                    this, 0,
+                    Intent(this, com.abuzahra.manager.MainActivity::class.java),
+                    PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                )
+            )
             .build()
     }
 
     private fun updateNotification(text: String) {
-        val manager = getSystemService(NotificationManager::class.java)
-        manager.notify(NOTIFICATION_ID, createNotification(text))
+        try {
+            val manager = getSystemService(NotificationManager::class.java)
+            manager.notify(NOTIFICATION_ID, createNotification(text))
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to update notification", e)
+        }
     }
 
     private fun requestBatteryOptimization() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val intent = Intent(
-                Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
-                android.net.Uri.parse("package:${packageName}")
-            )
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            try { startActivity(intent) } catch (_: Exception) {}
+            try {
+                val intent = Intent(
+                    Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+                    android.net.Uri.parse("package:${packageName}")
+                )
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+            } catch (_: Exception) {}
         }
     }
 }

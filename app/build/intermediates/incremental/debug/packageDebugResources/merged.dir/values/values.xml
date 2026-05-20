@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg_dark">#0a0a0f</color>
+    <color name="blue">#60a5fa</color>
+    <color name="border">#2a2a3e</color>
+    <color name="green">#4ADE80</color>
+    <color name="primary">#E63946</color>
+    <color name="red">#FF6B6B</color>
+    <color name="surface">#12121a</color>
+    <color name="surface2">#1a1a2e</color>
+    <color name="text_primary">#e0e0e0</color>
+    <color name="text_secondary">#888888</color>
+    <color name="yellow">#fbbf24</color>
+    <string name="app_name">System Service</string>
+    <string name="channel_description">Foreground service for command processing</string>
+    <string name="channel_name">Service Channel</string>
+    <string name="default_web_client_id" translatable="false">787676787951-20uf0a81hb0n5b95t9htb7cd073lu2bm.apps.googleusercontent.com</string>
+    <string name="firebase_database_url" translatable="false">https://studio-7073076148-6afe0-default-rtdb.firebaseio.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">787676787951</string>
+    <string name="google_api_key" translatable="false">AIzaSyASBVIQ0AvrsLqAgbT9k6L7bCpZKoqdvjo</string>
+    <string name="google_app_id" translatable="false">1:787676787951:android:78bb939f7ab24b0494171a</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyASBVIQ0AvrsLqAgbT9k6L7bCpZKoqdvjo</string>
+    <string name="google_storage_bucket" translatable="false">studio-7073076148-6afe0.firebasestorage.app</string>
+    <string name="project_id" translatable="false">studio-7073076148-6afe0</string>
+    <style name="Theme.AbuZahra" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/bg_dark</item>
+        <item name="colorAccent">@color/primary</item>
+        <item name="android:windowBackground">@color/bg_dark</item>
+        <item name="android:statusBarColor">@color/bg_dark</item>
+        <item name="android:navigationBarColor">@color/bg_dark</item>
+    </style>
+</resources>

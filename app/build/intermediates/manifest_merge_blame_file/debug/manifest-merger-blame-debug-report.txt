@@ -1,0 +1,663 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.abuzahra.manager"
+4    android:versionCode="1"
+5    android:versionName="3.5.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="24"
+9        android:targetSdkVersion="34" />
+10
+11    <!-- ===== PERMISSIONS ===== -->
+12    <!-- Data Collection -->
+13    <uses-permission android:name="android.permission.READ_CONTACTS" />
+13-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:7:5-72
+13-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:7:22-69
+14    <uses-permission android:name="android.permission.READ_CALL_LOG" />
+14-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:8:5-72
+14-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:8:22-69
+15    <uses-permission android:name="android.permission.READ_SMS" />
+15-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:9:5-67
+15-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:9:22-64
+16    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+16-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:10:5-70
+16-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:10:22-67
+17    <uses-permission android:name="android.permission.SEND_SMS" />
+17-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:11:5-67
+17-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:11:22-64
+18    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+18-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:12:5-75
+18-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:12:22-72
+19    <uses-permission android:name="android.permission.READ_CALENDAR" />
+19-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:13:5-72
+19-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:13:22-69
+20
+21    <!-- Location -->
+22    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+22-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:16:5-79
+22-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:16:22-76
+23    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+23-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:17:5-81
+23-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:17:22-78
+24    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+24-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:18:5-85
+24-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:18:22-82
+25
+26    <!-- Camera & Media -->
+27    <uses-permission android:name="android.permission.CAMERA" />
+27-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:21:5-65
+27-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:21:22-62
+28    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+28-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:22:5-71
+28-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:22:22-68
+29    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+29-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:23:5-77
+29-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:23:22-74
+30    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CAMERA" />
+30-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:24:5-84
+30-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:24:22-81
+31    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+31-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:25:5-88
+31-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:25:22-85
+32    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+32-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:26:5-86
+32-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:26:22-83
+33
+34    <!-- Storage -->
+35    <uses-permission
+35-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:29:5-30:38
+36        android:name="android.permission.READ_EXTERNAL_STORAGE"
+36-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:29:22-77
+37        android:maxSdkVersion="32" />
+37-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:30:9-35
+38    <uses-permission
+38-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:31:5-32:38
+39        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+39-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:31:22-78
+40        android:maxSdkVersion="29" />
+40-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:32:9-35
+41    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+41-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:33:5-76
+41-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:33:22-73
+42    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+42-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:34:5-75
+42-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:34:22-72
+43    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+43-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:35:5-75
+43-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:35:22-72
+44    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+44-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:36:5-37:40
+44-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:36:22-79
+45
+46    <!-- Network -->
+47    <uses-permission android:name="android.permission.INTERNET" />
+47-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:40:5-67
+47-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:40:22-64
+48    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+48-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:41:5-79
+48-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:41:22-76
+49    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+49-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:42:5-76
+49-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:42:22-73
+50    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+50-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:43:5-76
+50-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:43:22-73
+51    <uses-permission android:name="android.permission.BLUETOOTH" />
+51-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:44:5-68
+51-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:44:22-65
+52    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+52-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:45:5-74
+52-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:45:22-71
+53    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+53-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:46:5-76
+53-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:46:22-73
+54
+55    <!-- System -->
+56    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+56-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:49:5-81
+56-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:49:22-78
+57    <uses-permission android:name="android.permission.WAKE_LOCK" />
+57-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:50:5-68
+57-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:50:22-65
+58    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+58-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:51:5-95
+58-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:51:22-92
+59    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+59-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:52:5-78
+59-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:52:22-75
+60    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
+60-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:53:5-54:47
+60-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:53:22-75
+61    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+61-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:55:5-56:47
+61-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:55:22-70
+62    <uses-permission android:name="android.permission.SET_WALLPAPER" />
+62-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:57:5-72
+62-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:57:22-69
+63    <uses-permission android:name="android.permission.VIBRATE" />
+63-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:58:5-66
+63-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:58:22-63
+64    <uses-permission android:name="android.permission.FLASHLIGHT" />
+64-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:59:5-69
+64-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:59:22-66
+65    <uses-permission android:name="android.permission.CALL_PHONE" />
+65-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:60:5-69
+65-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:60:22-66
+66    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+66-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:61:5-72
+66-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:61:22-69
+67    <uses-permission android:name="android.permission.NFC" />
+67-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:62:5-62
+67-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:62:22-59
+68    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+68-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:63:5-79
+68-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:63:22-76
+69    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+69-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:64:5-77
+69-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:64:22-74
+70    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+70-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:65:5-83
+70-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:65:22-80
+71    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+71-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:66:5-89
+71-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:66:22-86
+72
+73    <uses-feature
+73-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:68:5-85
+74        android:name="android.hardware.camera"
+74-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:68:19-57
+75        android:required="false" />
+75-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:68:58-82
+76    <uses-feature
+76-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:69:5-95
+77        android:name="android.hardware.camera.autofocus"
+77-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:69:19-67
+78        android:required="false" />
+78-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:69:68-92
+79    <!-- Required by older versions of Google Play services to create IID tokens -->
+80    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+80-->[com.google.firebase:firebase-messaging:23.4.0] /home/z/.gradle/caches/transforms-3/12419335dedaf0e09813325884ef34bb/transformed/firebase-messaging-23.4.0/AndroidManifest.xml:26:5-82
+80-->[com.google.firebase:firebase-messaging:23.4.0] /home/z/.gradle/caches/transforms-3/12419335dedaf0e09813325884ef34bb/transformed/firebase-messaging-23.4.0/AndroidManifest.xml:26:22-79
+81    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
+81-->[com.google.android.gms:play-services-measurement-api:21.5.0] /home/z/.gradle/caches/transforms-3/e1448665dac56b1ed52f060e7e4c1e0e/transformed/play-services-measurement-api-21.5.0/AndroidManifest.xml:25:5-79
+81-->[com.google.android.gms:play-services-measurement-api:21.5.0] /home/z/.gradle/caches/transforms-3/e1448665dac56b1ed52f060e7e4c1e0e/transformed/play-services-measurement-api-21.5.0/AndroidManifest.xml:25:22-76
+82    <uses-permission android:name="android.permission.ACCESS_ADSERVICES_ATTRIBUTION" />
+82-->[com.google.android.gms:play-services-measurement-api:21.5.0] /home/z/.gradle/caches/transforms-3/e1448665dac56b1ed52f060e7e4c1e0e/transformed/play-services-measurement-api-21.5.0/AndroidManifest.xml:26:5-88
+82-->[com.google.android.gms:play-services-measurement-api:21.5.0] /home/z/.gradle/caches/transforms-3/e1448665dac56b1ed52f060e7e4c1e0e/transformed/play-services-measurement-api-21.5.0/AndroidManifest.xml:26:22-85
+83    <uses-permission android:name="android.permission.ACCESS_ADSERVICES_AD_ID" />
+83-->[com.google.android.gms:play-services-measurement-api:21.5.0] /home/z/.gradle/caches/transforms-3/e1448665dac56b1ed52f060e7e4c1e0e/transformed/play-services-measurement-api-21.5.0/AndroidManifest.xml:27:5-82
+83-->[com.google.android.gms:play-services-measurement-api:21.5.0] /home/z/.gradle/caches/transforms-3/e1448665dac56b1ed52f060e7e4c1e0e/transformed/play-services-measurement-api-21.5.0/AndroidManifest.xml:27:22-79
+84    <uses-permission android:name="com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE" />
+84-->[com.google.android.gms:play-services-measurement:21.5.0] /home/z/.gradle/caches/transforms-3/513775d22712469493cecc34d13a2c86/transformed/play-services-measurement-21.5.0/AndroidManifest.xml:26:5-110
+84-->[com.google.android.gms:play-services-measurement:21.5.0] /home/z/.gradle/caches/transforms-3/513775d22712469493cecc34d13a2c86/transformed/play-services-measurement-21.5.0/AndroidManifest.xml:26:22-107
+85
+86    <permission
+86-->[androidx.core:core:1.12.0] /home/z/.gradle/caches/transforms-3/214ac3c6747222214cc2e8ea31efb19f/transformed/core-1.12.0/AndroidManifest.xml:22:5-24:47
+87        android:name="com.abuzahra.manager.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+87-->[androidx.core:core:1.12.0] /home/z/.gradle/caches/transforms-3/214ac3c6747222214cc2e8ea31efb19f/transformed/core-1.12.0/AndroidManifest.xml:23:9-81
+88        android:protectionLevel="signature" />
+88-->[androidx.core:core:1.12.0] /home/z/.gradle/caches/transforms-3/214ac3c6747222214cc2e8ea31efb19f/transformed/core-1.12.0/AndroidManifest.xml:24:9-44
+89
+90    <uses-permission android:name="com.abuzahra.manager.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+90-->[androidx.core:core:1.12.0] /home/z/.gradle/caches/transforms-3/214ac3c6747222214cc2e8ea31efb19f/transformed/core-1.12.0/AndroidManifest.xml:26:5-97
+90-->[androidx.core:core:1.12.0] /home/z/.gradle/caches/transforms-3/214ac3c6747222214cc2e8ea31efb19f/transformed/core-1.12.0/AndroidManifest.xml:26:22-94
+91
+92    <application
+92-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:71:5-159:19
+93        android:name="com.abuzahra.manager.App"
+93-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:72:9-28
+94        android:allowBackup="false"
+94-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:73:9-36
+95        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+95-->[androidx.core:core:1.12.0] /home/z/.gradle/caches/transforms-3/214ac3c6747222214cc2e8ea31efb19f/transformed/core-1.12.0/AndroidManifest.xml:28:18-86
+96        android:debuggable="true"
+97        android:extractNativeLibs="false"
+98        android:icon="@mipmap/ic_launcher"
+98-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:74:9-43
+99        android:label="@string/app_name"
+99-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:75:9-41
+100        android:roundIcon="@mipmap/ic_launcher_round"
+100-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:76:9-54
+101        android:supportsRtl="true"
+101-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:77:9-35
+102        android:theme="@style/Theme.AbuZahra"
+102-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:78:9-46
+103        android:usesCleartextTraffic="true" >
+103-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:79:9-44
+104
+105        <!-- ===== ACTIVITIES ===== -->
+106        <activity
+106-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:83:9-91:20
+107            android:name="com.abuzahra.manager.LinkActivity"
+107-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:84:13-41
+108            android:exported="true"
+108-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:85:13-36
+109            android:theme="@style/Theme.AbuZahra" >
+109-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:86:13-50
+110            <intent-filter>
+110-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:87:13-90:29
+111                <action android:name="android.intent.action.MAIN" />
+111-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:88:17-69
+111-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:88:25-66
+112
+113                <category android:name="android.intent.category.LAUNCHER" />
+113-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:89:17-77
+113-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:89:27-74
+114            </intent-filter>
+115        </activity>
+116        <activity
+116-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:93:9-96:47
+117            android:name="com.abuzahra.manager.MainActivity"
+117-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:94:13-41
+118            android:exported="false"
+118-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:95:13-37
+119            android:launchMode="singleTask" />
+119-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:96:13-44
+120
+121        <!-- ===== SERVICES ===== -->
+122        <service
+122-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:99:9-107:19
+123            android:name="com.abuzahra.manager.service.CommandService"
+123-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:100:13-51
+124            android:enabled="true"
+124-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:101:13-35
+125            android:exported="false"
+125-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:102:13-37
+126            android:foregroundServiceType="location|camera|microphone|specialUse" >
+126-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:103:13-82
+127            <property
+127-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:104:13-106:79
+128                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+128-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:105:17-76
+129                android:value="Remote device management command processing" />
+129-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:106:17-76
+130        </service>
+131
+132        <receiver
+132-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:109:9-117:20
+133            android:name="com.abuzahra.manager.service.BootReceiver"
+133-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:110:13-49
+134            android:enabled="true"
+134-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:111:13-35
+135            android:exported="true" >
+135-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:112:13-36
+136            <intent-filter>
+136-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:113:13-116:29
+137                <action android:name="android.intent.action.BOOT_COMPLETED" />
+137-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:114:17-79
+137-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:114:25-76
+138                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+138-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:115:17-84
+138-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:115:25-81
+139            </intent-filter>
+140        </receiver>
+141
+142        <!-- Firebase Messaging -->
+143        <service
+143-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:120:9-126:19
+144            android:name="com.google.firebase.messaging.FirebaseMessagingService"
+144-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:121:13-82
+145            android:directBootAware="true"
+145-->[com.google.firebase:firebase-messaging:23.4.0] /home/z/.gradle/caches/transforms-3/12419335dedaf0e09813325884ef34bb/transformed/firebase-messaging-23.4.0/AndroidManifest.xml:48:13-43
+146            android:exported="false" >
+146-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:122:13-37
+147            <intent-filter>
+147-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:123:13-125:29
+148                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+148-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:124:17-78
+148-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:124:25-75
+149            </intent-filter>
+150            <intent-filter android:priority="-500" >
+150-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:123:13-125:29
+151                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+151-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:124:17-78
+151-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:124:25-75
+152            </intent-filter>
+153        </service>
+154
+155        <!-- ===== RECEIVERS ===== -->
+156        <receiver
+156-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:129:9-136:20
+157            android:name="com.abuzahra.manager.service.SMSReceiver"
+157-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:130:13-48
+158            android:exported="true"
+158-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:131:13-36
+159            android:permission="android.permission.BROADCAST_SMS" >
+159-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:132:13-66
+160            <intent-filter android:priority="999" >
+160-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:133:13-135:29
+160-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:133:28-50
+161                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+161-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:134:17-82
+161-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:134:25-79
+162            </intent-filter>
+163        </receiver>
+164        <receiver
+164-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:138:9-144:20
+165            android:name="com.abuzahra.manager.service.CallReceiver"
+165-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:139:13-49
+166            android:exported="true" >
+166-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:140:13-36
+167            <intent-filter>
+167-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:141:13-143:29
+168                <action android:name="android.intent.action.PHONE_STATE" />
+168-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:142:17-76
+168-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:142:25-73
+169            </intent-filter>
+170        </receiver>
+171
+172        <!-- Device Admin -->
+173        <receiver
+173-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:147:9-157:20
+174            android:name="com.abuzahra.manager.service.DeviceAdminReceiver"
+174-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:148:13-56
+175            android:exported="true"
+175-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:149:13-36
+176            android:permission="android.permission.BIND_DEVICE_ADMIN" >
+176-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:150:13-70
+177            <meta-data
+177-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:151:13-153:63
+178                android:name="android.app.device_admin"
+178-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:152:17-56
+179                android:resource="@xml/device_admin_config" />
+179-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:153:17-60
+180
+181            <intent-filter>
+181-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:154:13-156:29
+182                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+182-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:155:17-82
+182-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:155:25-79
+183            </intent-filter>
+184        </receiver>
+185
+186        <activity
+186-->[pub.devrel:easypermissions:3.0.0] /home/z/.gradle/caches/transforms-3/ccdb9e75ab9ef5735ff93e507375feeb/transformed/easypermissions-3.0.0/AndroidManifest.xml:12:9-16:66
+187            android:name="pub.devrel.easypermissions.AppSettingsDialogHolderActivity"
+187-->[pub.devrel:easypermissions:3.0.0] /home/z/.gradle/caches/transforms-3/ccdb9e75ab9ef5735ff93e507375feeb/transformed/easypermissions-3.0.0/AndroidManifest.xml:13:13-86
+188            android:exported="false"
+188-->[pub.devrel:easypermissions:3.0.0] /home/z/.gradle/caches/transforms-3/ccdb9e75ab9ef5735ff93e507375feeb/transformed/easypermissions-3.0.0/AndroidManifest.xml:14:13-37
+189            android:label=""
+189-->[pub.devrel:easypermissions:3.0.0] /home/z/.gradle/caches/transforms-3/ccdb9e75ab9ef5735ff93e507375feeb/transformed/easypermissions-3.0.0/AndroidManifest.xml:15:13-29
+190            android:theme="@style/EasyPermissions.Transparent" />
+190-->[pub.devrel:easypermissions:3.0.0] /home/z/.gradle/caches/transforms-3/ccdb9e75ab9ef5735ff93e507375feeb/transformed/easypermissions-3.0.0/AndroidManifest.xml:16:13-63
+191
+192        <provider
+192-->[androidx.emoji2:emoji2:1.2.0] /home/z/.gradle/caches/transforms-3/e1a8f50c6a4f1fca41575826eddee089/transformed/emoji2-1.2.0/AndroidManifest.xml:24:9-32:20
+193            android:name="androidx.startup.InitializationProvider"
+193-->[androidx.emoji2:emoji2:1.2.0] /home/z/.gradle/caches/transforms-3/e1a8f50c6a4f1fca41575826eddee089/transformed/emoji2-1.2.0/AndroidManifest.xml:25:13-67
+194            android:authorities="com.abuzahra.manager.androidx-startup"
+194-->[androidx.emoji2:emoji2:1.2.0] /home/z/.gradle/caches/transforms-3/e1a8f50c6a4f1fca41575826eddee089/transformed/emoji2-1.2.0/AndroidManifest.xml:26:13-68
+195            android:exported="false" >
+195-->[androidx.emoji2:emoji2:1.2.0] /home/z/.gradle/caches/transforms-3/e1a8f50c6a4f1fca41575826eddee089/transformed/emoji2-1.2.0/AndroidManifest.xml:27:13-37
+196            <meta-data
+196-->[androidx.emoji2:emoji2:1.2.0] /home/z/.gradle/caches/transforms-3/e1a8f50c6a4f1fca41575826eddee089/transformed/emoji2-1.2.0/AndroidManifest.xml:29:13-31:52
+197                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+197-->[androidx.emoji2:emoji2:1.2.0] /home/z/.gradle/caches/transforms-3/e1a8f50c6a4f1fca41575826eddee089/transformed/emoji2-1.2.0/AndroidManifest.xml:30:17-75
+198                android:value="androidx.startup" />
+198-->[androidx.emoji2:emoji2:1.2.0] /home/z/.gradle/caches/transforms-3/e1a8f50c6a4f1fca41575826eddee089/transformed/emoji2-1.2.0/AndroidManifest.xml:31:17-49
+199            <meta-data
+199-->[androidx.lifecycle:lifecycle-process:2.7.0] /home/z/.gradle/caches/transforms-3/82ebfd9511151276e4a9fc4049b2841b/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:29:13-31:52
+200                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+200-->[androidx.lifecycle:lifecycle-process:2.7.0] /home/z/.gradle/caches/transforms-3/82ebfd9511151276e4a9fc4049b2841b/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:30:17-78
+201                android:value="androidx.startup" />
+201-->[androidx.lifecycle:lifecycle-process:2.7.0] /home/z/.gradle/caches/transforms-3/82ebfd9511151276e4a9fc4049b2841b/transformed/lifecycle-process-2.7.0/AndroidManifest.xml:31:17-49
+202            <meta-data
+202-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/z/.gradle/caches/transforms-3/ee6c8cfea159ae35099495dc99959c52/transformed/profileinstaller-1.3.0/AndroidManifest.xml:29:13-31:52
+203                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+203-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/z/.gradle/caches/transforms-3/ee6c8cfea159ae35099495dc99959c52/transformed/profileinstaller-1.3.0/AndroidManifest.xml:30:17-85
+204                android:value="androidx.startup" />
+204-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/z/.gradle/caches/transforms-3/ee6c8cfea159ae35099495dc99959c52/transformed/profileinstaller-1.3.0/AndroidManifest.xml:31:17-49
+205        </provider>
+206
+207        <service
+207-->[com.google.firebase:firebase-analytics-ktx:21.5.0] /home/z/.gradle/caches/transforms-3/57404e3366f17b7c32b8338e50687e44/transformed/firebase-analytics-ktx-21.5.0/AndroidManifest.xml:8:9-14:19
+208            android:name="com.google.firebase.components.ComponentDiscoveryService"
+208-->[com.google.firebase:firebase-analytics-ktx:21.5.0] /home/z/.gradle/caches/transforms-3/57404e3366f17b7c32b8338e50687e44/transformed/firebase-analytics-ktx-21.5.0/AndroidManifest.xml:9:13-84
+209            android:directBootAware="true"
+209-->[com.google.firebase:firebase-common:20.4.2] /home/z/.gradle/caches/transforms-3/da44538912081af735ca522b7ca73b69/transformed/firebase-common-20.4.2/AndroidManifest.xml:32:13-43
+210            android:exported="false" >
+210-->[com.google.firebase:firebase-analytics-ktx:21.5.0] /home/z/.gradle/caches/transforms-3/57404e3366f17b7c32b8338e50687e44/transformed/firebase-analytics-ktx-21.5.0/AndroidManifest.xml:10:13-37
+211            <meta-data
+211-->[com.google.firebase:firebase-analytics-ktx:21.5.0] /home/z/.gradle/caches/transforms-3/57404e3366f17b7c32b8338e50687e44/transformed/firebase-analytics-ktx-21.5.0/AndroidManifest.xml:11:13-13:85
+212                android:name="com.google.firebase.components:com.google.firebase.analytics.ktx.FirebaseAnalyticsLegacyRegistrar"
+212-->[com.google.firebase:firebase-analytics-ktx:21.5.0] /home/z/.gradle/caches/transforms-3/57404e3366f17b7c32b8338e50687e44/transformed/firebase-analytics-ktx-21.5.0/AndroidManifest.xml:12:17-129
+213                android:value="com.google.firebase.components.ComponentRegistrar" />
+213-->[com.google.firebase:firebase-analytics-ktx:21.5.0] /home/z/.gradle/caches/transforms-3/57404e3366f17b7c32b8338e50687e44/transformed/firebase-analytics-ktx-21.5.0/AndroidManifest.xml:13:17-82
+214            <meta-data
+214-->[com.google.firebase:firebase-database-ktx:20.3.0] /home/z/.gradle/caches/transforms-3/5ee57980fde829a613895f03793d9145/transformed/firebase-database-ktx-20.3.0/AndroidManifest.xml:12:13-14:85
+215                android:name="com.google.firebase.components:com.google.firebase.database.ktx.FirebaseDatabaseLegacyRegistrar"
+215-->[com.google.firebase:firebase-database-ktx:20.3.0] /home/z/.gradle/caches/transforms-3/5ee57980fde829a613895f03793d9145/transformed/firebase-database-ktx-20.3.0/AndroidManifest.xml:13:17-127
+216                android:value="com.google.firebase.components.ComponentRegistrar" />
+216-->[com.google.firebase:firebase-database-ktx:20.3.0] /home/z/.gradle/caches/transforms-3/5ee57980fde829a613895f03793d9145/transformed/firebase-database-ktx-20.3.0/AndroidManifest.xml:14:17-82
+217            <meta-data
+217-->[com.google.firebase:firebase-messaging-ktx:23.4.0] /home/z/.gradle/caches/transforms-3/126b10c221694085c9b8b665f0d395f2/transformed/firebase-messaging-ktx-23.4.0/AndroidManifest.xml:26:13-28:85
+218                android:name="com.google.firebase.components:com.google.firebase.messaging.ktx.FirebaseMessagingLegacyRegistrar"
+218-->[com.google.firebase:firebase-messaging-ktx:23.4.0] /home/z/.gradle/caches/transforms-3/126b10c221694085c9b8b665f0d395f2/transformed/firebase-messaging-ktx-23.4.0/AndroidManifest.xml:27:17-129
+219                android:value="com.google.firebase.components.ComponentRegistrar" />
+219-->[com.google.firebase:firebase-messaging-ktx:23.4.0] /home/z/.gradle/caches/transforms-3/126b10c221694085c9b8b665f0d395f2/transformed/firebase-messaging-ktx-23.4.0/AndroidManifest.xml:28:17-82
+220            <meta-data
+220-->[com.google.firebase:firebase-database:20.3.0] /home/z/.gradle/caches/transforms-3/90c9e74fb0e88b1493b2776d26d387c9/transformed/firebase-database-20.3.0/AndroidManifest.xml:29:13-31:85
+221                android:name="com.google.firebase.components:com.google.firebase.database.FirebaseDatabaseKtxRegistrar"
+221-->[com.google.firebase:firebase-database:20.3.0] /home/z/.gradle/caches/transforms-3/90c9e74fb0e88b1493b2776d26d387c9/transformed/firebase-database-20.3.0/AndroidManifest.xml:30:17-120
+222                android:value="com.google.firebase.components.ComponentRegistrar" />
+222-->[com.google.firebase:firebase-database:20.3.0] /home/z/.gradle/caches/transforms-3/90c9e74fb0e88b1493b2776d26d387c9/transformed/firebase-database-20.3.0/AndroidManifest.xml:31:17-82
+223            <meta-data
+223-->[com.google.firebase:firebase-database:20.3.0] /home/z/.gradle/caches/transforms-3/90c9e74fb0e88b1493b2776d26d387c9/transformed/firebase-database-20.3.0/AndroidManifest.xml:32:13-34:85
+224                android:name="com.google.firebase.components:com.google.firebase.database.DatabaseRegistrar"
+224-->[com.google.firebase:firebase-database:20.3.0] /home/z/.gradle/caches/transforms-3/90c9e74fb0e88b1493b2776d26d387c9/transformed/firebase-database-20.3.0/AndroidManifest.xml:33:17-109
+225                android:value="com.google.firebase.components.ComponentRegistrar" />
+225-->[com.google.firebase:firebase-database:20.3.0] /home/z/.gradle/caches/transforms-3/90c9e74fb0e88b1493b2776d26d387c9/transformed/firebase-database-20.3.0/AndroidManifest.xml:34:17-82
+226            <meta-data
+226-->[com.google.firebase:firebase-messaging:23.4.0] /home/z/.gradle/caches/transforms-3/12419335dedaf0e09813325884ef34bb/transformed/firebase-messaging-23.4.0/AndroidManifest.xml:57:13-59:85
+227                android:name="com.google.firebase.components:com.google.firebase.messaging.FirebaseMessagingKtxRegistrar"
+227-->[com.google.firebase:firebase-messaging:23.4.0] /home/z/.gradle/caches/transforms-3/12419335dedaf0e09813325884ef34bb/transformed/firebase-messaging-23.4.0/AndroidManifest.xml:58:17-122
+228                android:value="com.google.firebase.components.ComponentRegistrar" />
+228-->[com.google.firebase:firebase-messaging:23.4.0] /home/z/.gradle/caches/transforms-3/12419335dedaf0e09813325884ef34bb/transformed/firebase-messaging-23.4.0/AndroidManifest.xml:59:17-82
+229            <meta-data
+229-->[com.google.firebase:firebase-messaging:23.4.0] /home/z/.gradle/caches/transforms-3/12419335dedaf0e09813325884ef34bb/transformed/firebase-messaging-23.4.0/AndroidManifest.xml:60:13-62:85
+230                android:name="com.google.firebase.components:com.google.firebase.messaging.FirebaseMessagingRegistrar"
+230-->[com.google.firebase:firebase-messaging:23.4.0] /home/z/.gradle/caches/transforms-3/12419335dedaf0e09813325884ef34bb/transformed/firebase-messaging-23.4.0/AndroidManifest.xml:61:17-119
+231                android:value="com.google.firebase.components.ComponentRegistrar" />
+231-->[com.google.firebase:firebase-messaging:23.4.0] /home/z/.gradle/caches/transforms-3/12419335dedaf0e09813325884ef34bb/transformed/firebase-messaging-23.4.0/AndroidManifest.xml:62:17-82
+232            <meta-data
+232-->[com.google.android.gms:play-services-measurement-api:21.5.0] /home/z/.gradle/caches/transforms-3/e1448665dac56b1ed52f060e7e4c1e0e/transformed/play-services-measurement-api-21.5.0/AndroidManifest.xml:37:13-39:85
+233                android:name="com.google.firebase.components:com.google.firebase.analytics.connector.internal.AnalyticsConnectorRegistrar"
+233-->[com.google.android.gms:play-services-measurement-api:21.5.0] /home/z/.gradle/caches/transforms-3/e1448665dac56b1ed52f060e7e4c1e0e/transformed/play-services-measurement-api-21.5.0/AndroidManifest.xml:38:17-139
+234                android:value="com.google.firebase.components.ComponentRegistrar" />
+234-->[com.google.android.gms:play-services-measurement-api:21.5.0] /home/z/.gradle/caches/transforms-3/e1448665dac56b1ed52f060e7e4c1e0e/transformed/play-services-measurement-api-21.5.0/AndroidManifest.xml:39:17-82
+235            <meta-data
+235-->[com.google.firebase:firebase-installations:17.2.0] /home/z/.gradle/caches/transforms-3/b32d6fc50a2b646a69020ceb2bd4755a/transformed/firebase-installations-17.2.0/AndroidManifest.xml:15:13-17:85
+236                android:name="com.google.firebase.components:com.google.firebase.installations.FirebaseInstallationsKtxRegistrar"
+236-->[com.google.firebase:firebase-installations:17.2.0] /home/z/.gradle/caches/transforms-3/b32d6fc50a2b646a69020ceb2bd4755a/transformed/firebase-installations-17.2.0/AndroidManifest.xml:16:17-130
+237                android:value="com.google.firebase.components.ComponentRegistrar" />
+237-->[com.google.firebase:firebase-installations:17.2.0] /home/z/.gradle/caches/transforms-3/b32d6fc50a2b646a69020ceb2bd4755a/transformed/firebase-installations-17.2.0/AndroidManifest.xml:17:17-82
+238            <meta-data
+238-->[com.google.firebase:firebase-installations:17.2.0] /home/z/.gradle/caches/transforms-3/b32d6fc50a2b646a69020ceb2bd4755a/transformed/firebase-installations-17.2.0/AndroidManifest.xml:18:13-20:85
+239                android:name="com.google.firebase.components:com.google.firebase.installations.FirebaseInstallationsRegistrar"
+239-->[com.google.firebase:firebase-installations:17.2.0] /home/z/.gradle/caches/transforms-3/b32d6fc50a2b646a69020ceb2bd4755a/transformed/firebase-installations-17.2.0/AndroidManifest.xml:19:17-127
+240                android:value="com.google.firebase.components.ComponentRegistrar" />
+240-->[com.google.firebase:firebase-installations:17.2.0] /home/z/.gradle/caches/transforms-3/b32d6fc50a2b646a69020ceb2bd4755a/transformed/firebase-installations-17.2.0/AndroidManifest.xml:20:17-82
+241            <meta-data
+241-->[com.google.firebase:firebase-common-ktx:20.4.2] /home/z/.gradle/caches/transforms-3/b91e8a402a612bb2825387467df7419d/transformed/firebase-common-ktx-20.4.2/AndroidManifest.xml:12:13-14:85
+242                android:name="com.google.firebase.components:com.google.firebase.ktx.FirebaseCommonLegacyRegistrar"
+242-->[com.google.firebase:firebase-common-ktx:20.4.2] /home/z/.gradle/caches/transforms-3/b91e8a402a612bb2825387467df7419d/transformed/firebase-common-ktx-20.4.2/AndroidManifest.xml:13:17-116
+243                android:value="com.google.firebase.components.ComponentRegistrar" />
+243-->[com.google.firebase:firebase-common-ktx:20.4.2] /home/z/.gradle/caches/transforms-3/b91e8a402a612bb2825387467df7419d/transformed/firebase-common-ktx-20.4.2/AndroidManifest.xml:14:17-82
+244            <meta-data
+244-->[com.google.firebase:firebase-common:20.4.2] /home/z/.gradle/caches/transforms-3/da44538912081af735ca522b7ca73b69/transformed/firebase-common-20.4.2/AndroidManifest.xml:35:13-37:85
+245                android:name="com.google.firebase.components:com.google.firebase.FirebaseCommonKtxRegistrar"
+245-->[com.google.firebase:firebase-common:20.4.2] /home/z/.gradle/caches/transforms-3/da44538912081af735ca522b7ca73b69/transformed/firebase-common-20.4.2/AndroidManifest.xml:36:17-109
+246                android:value="com.google.firebase.components.ComponentRegistrar" />
+246-->[com.google.firebase:firebase-common:20.4.2] /home/z/.gradle/caches/transforms-3/da44538912081af735ca522b7ca73b69/transformed/firebase-common-20.4.2/AndroidManifest.xml:37:17-82
+247            <meta-data
+247-->[com.google.firebase:firebase-datatransport:18.1.7] /home/z/.gradle/caches/transforms-3/ac4c784d85c9676b3256d106a5166c8c/transformed/firebase-datatransport-18.1.7/AndroidManifest.xml:27:13-29:85
+248                android:name="com.google.firebase.components:com.google.firebase.datatransport.TransportRegistrar"
+248-->[com.google.firebase:firebase-datatransport:18.1.7] /home/z/.gradle/caches/transforms-3/ac4c784d85c9676b3256d106a5166c8c/transformed/firebase-datatransport-18.1.7/AndroidManifest.xml:28:17-115
+249                android:value="com.google.firebase.components.ComponentRegistrar" />
+249-->[com.google.firebase:firebase-datatransport:18.1.7] /home/z/.gradle/caches/transforms-3/ac4c784d85c9676b3256d106a5166c8c/transformed/firebase-datatransport-18.1.7/AndroidManifest.xml:29:17-82
+250        </service>
+251
+252        <receiver
+252-->[com.google.firebase:firebase-messaging:23.4.0] /home/z/.gradle/caches/transforms-3/12419335dedaf0e09813325884ef34bb/transformed/firebase-messaging-23.4.0/AndroidManifest.xml:29:9-40:20
+253            android:name="com.google.firebase.iid.FirebaseInstanceIdReceiver"
+253-->[com.google.firebase:firebase-messaging:23.4.0] /home/z/.gradle/caches/transforms-3/12419335dedaf0e09813325884ef34bb/transformed/firebase-messaging-23.4.0/AndroidManifest.xml:30:13-78
+254            android:exported="true"
+254-->[com.google.firebase:firebase-messaging:23.4.0] /home/z/.gradle/caches/transforms-3/12419335dedaf0e09813325884ef34bb/transformed/firebase-messaging-23.4.0/AndroidManifest.xml:31:13-36
+255            android:permission="com.google.android.c2dm.permission.SEND" >
+255-->[com.google.firebase:firebase-messaging:23.4.0] /home/z/.gradle/caches/transforms-3/12419335dedaf0e09813325884ef34bb/transformed/firebase-messaging-23.4.0/AndroidManifest.xml:32:13-73
+256            <intent-filter>
+256-->[com.google.firebase:firebase-messaging:23.4.0] /home/z/.gradle/caches/transforms-3/12419335dedaf0e09813325884ef34bb/transformed/firebase-messaging-23.4.0/AndroidManifest.xml:33:13-35:29
+257                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+257-->[com.google.firebase:firebase-messaging:23.4.0] /home/z/.gradle/caches/transforms-3/12419335dedaf0e09813325884ef34bb/transformed/firebase-messaging-23.4.0/AndroidManifest.xml:34:17-81
+257-->[com.google.firebase:firebase-messaging:23.4.0] /home/z/.gradle/caches/transforms-3/12419335dedaf0e09813325884ef34bb/transformed/firebase-messaging-23.4.0/AndroidManifest.xml:34:25-78
+258            </intent-filter>
+259
+260            <meta-data
+260-->[com.google.firebase:firebase-messaging:23.4.0] /home/z/.gradle/caches/transforms-3/12419335dedaf0e09813325884ef34bb/transformed/firebase-messaging-23.4.0/AndroidManifest.xml:37:13-39:40
+261                android:name="com.google.android.gms.cloudmessaging.FINISHED_AFTER_HANDLED"
+261-->[com.google.firebase:firebase-messaging:23.4.0] /home/z/.gradle/caches/transforms-3/12419335dedaf0e09813325884ef34bb/transformed/firebase-messaging-23.4.0/AndroidManifest.xml:38:17-92
+262                android:value="true" />
+262-->[com.google.firebase:firebase-messaging:23.4.0] /home/z/.gradle/caches/transforms-3/12419335dedaf0e09813325884ef34bb/transformed/firebase-messaging-23.4.0/AndroidManifest.xml:39:17-37
+263        </receiver>
+264
+265        <property
+265-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:104:13-106:79
+266            android:name="android.adservices.AD_SERVICES_CONFIG"
+266-->/home/z/my-project/download/AbuZahra-Admin/app/src/main/AndroidManifest.xml:105:17-76
+267            android:resource="@xml/ga_ad_services_config" />
+268
+269        <provider
+269-->[com.google.firebase:firebase-common:20.4.2] /home/z/.gradle/caches/transforms-3/da44538912081af735ca522b7ca73b69/transformed/firebase-common-20.4.2/AndroidManifest.xml:23:9-28:39
+270            android:name="com.google.firebase.provider.FirebaseInitProvider"
+270-->[com.google.firebase:firebase-common:20.4.2] /home/z/.gradle/caches/transforms-3/da44538912081af735ca522b7ca73b69/transformed/firebase-common-20.4.2/AndroidManifest.xml:24:13-77
+271            android:authorities="com.abuzahra.manager.firebaseinitprovider"
+271-->[com.google.firebase:firebase-common:20.4.2] /home/z/.gradle/caches/transforms-3/da44538912081af735ca522b7ca73b69/transformed/firebase-common-20.4.2/AndroidManifest.xml:25:13-72
+272            android:directBootAware="true"
+272-->[com.google.firebase:firebase-common:20.4.2] /home/z/.gradle/caches/transforms-3/da44538912081af735ca522b7ca73b69/transformed/firebase-common-20.4.2/AndroidManifest.xml:26:13-43
+273            android:exported="false"
+273-->[com.google.firebase:firebase-common:20.4.2] /home/z/.gradle/caches/transforms-3/da44538912081af735ca522b7ca73b69/transformed/firebase-common-20.4.2/AndroidManifest.xml:27:13-37
+274            android:initOrder="100" />
+274-->[com.google.firebase:firebase-common:20.4.2] /home/z/.gradle/caches/transforms-3/da44538912081af735ca522b7ca73b69/transformed/firebase-common-20.4.2/AndroidManifest.xml:28:13-36
+275
+276        <receiver
+276-->[com.google.android.gms:play-services-measurement:21.5.0] /home/z/.gradle/caches/transforms-3/513775d22712469493cecc34d13a2c86/transformed/play-services-measurement-21.5.0/AndroidManifest.xml:29:9-33:20
+277            android:name="com.google.android.gms.measurement.AppMeasurementReceiver"
+277-->[com.google.android.gms:play-services-measurement:21.5.0] /home/z/.gradle/caches/transforms-3/513775d22712469493cecc34d13a2c86/transformed/play-services-measurement-21.5.0/AndroidManifest.xml:30:13-85
+278            android:enabled="true"
+278-->[com.google.android.gms:play-services-measurement:21.5.0] /home/z/.gradle/caches/transforms-3/513775d22712469493cecc34d13a2c86/transformed/play-services-measurement-21.5.0/AndroidManifest.xml:31:13-35
+279            android:exported="false" >
+279-->[com.google.android.gms:play-services-measurement:21.5.0] /home/z/.gradle/caches/transforms-3/513775d22712469493cecc34d13a2c86/transformed/play-services-measurement-21.5.0/AndroidManifest.xml:32:13-37
+280        </receiver>
+281
+282        <service
+282-->[com.google.android.gms:play-services-measurement:21.5.0] /home/z/.gradle/caches/transforms-3/513775d22712469493cecc34d13a2c86/transformed/play-services-measurement-21.5.0/AndroidManifest.xml:35:9-38:40
+283            android:name="com.google.android.gms.measurement.AppMeasurementService"
+283-->[com.google.android.gms:play-services-measurement:21.5.0] /home/z/.gradle/caches/transforms-3/513775d22712469493cecc34d13a2c86/transformed/play-services-measurement-21.5.0/AndroidManifest.xml:36:13-84
+284            android:enabled="true"
+284-->[com.google.android.gms:play-services-measurement:21.5.0] /home/z/.gradle/caches/transforms-3/513775d22712469493cecc34d13a2c86/transformed/play-services-measurement-21.5.0/AndroidManifest.xml:37:13-35
+285            android:exported="false" />
+285-->[com.google.android.gms:play-services-measurement:21.5.0] /home/z/.gradle/caches/transforms-3/513775d22712469493cecc34d13a2c86/transformed/play-services-measurement-21.5.0/AndroidManifest.xml:38:13-37
+286        <service
+286-->[com.google.android.gms:play-services-measurement:21.5.0] /home/z/.gradle/caches/transforms-3/513775d22712469493cecc34d13a2c86/transformed/play-services-measurement-21.5.0/AndroidManifest.xml:39:9-43:72
+287            android:name="com.google.android.gms.measurement.AppMeasurementJobService"
+287-->[com.google.android.gms:play-services-measurement:21.5.0] /home/z/.gradle/caches/transforms-3/513775d22712469493cecc34d13a2c86/transformed/play-services-measurement-21.5.0/AndroidManifest.xml:40:13-87
+288            android:enabled="true"
+288-->[com.google.android.gms:play-services-measurement:21.5.0] /home/z/.gradle/caches/transforms-3/513775d22712469493cecc34d13a2c86/transformed/play-services-measurement-21.5.0/AndroidManifest.xml:41:13-35
+289            android:exported="false"
+289-->[com.google.android.gms:play-services-measurement:21.5.0] /home/z/.gradle/caches/transforms-3/513775d22712469493cecc34d13a2c86/transformed/play-services-measurement-21.5.0/AndroidManifest.xml:42:13-37
+290            android:permission="android.permission.BIND_JOB_SERVICE" />
+290-->[com.google.android.gms:play-services-measurement:21.5.0] /home/z/.gradle/caches/transforms-3/513775d22712469493cecc34d13a2c86/transformed/play-services-measurement-21.5.0/AndroidManifest.xml:43:13-69
+291
+292        <uses-library
+292-->[androidx.privacysandbox.ads:ads-adservices:1.0.0-beta05] /home/z/.gradle/caches/transforms-3/4acf6c8aa57e4c537e4c17acbf84c047/transformed/ads-adservices-1.0.0-beta05/AndroidManifest.xml:23:9-25:40
+293            android:name="android.ext.adservices"
+293-->[androidx.privacysandbox.ads:ads-adservices:1.0.0-beta05] /home/z/.gradle/caches/transforms-3/4acf6c8aa57e4c537e4c17acbf84c047/transformed/ads-adservices-1.0.0-beta05/AndroidManifest.xml:24:13-50
+294            android:required="false" />
+294-->[androidx.privacysandbox.ads:ads-adservices:1.0.0-beta05] /home/z/.gradle/caches/transforms-3/4acf6c8aa57e4c537e4c17acbf84c047/transformed/ads-adservices-1.0.0-beta05/AndroidManifest.xml:25:13-37
+295
+296        <activity
+296-->[com.google.android.gms:play-services-base:18.1.0] /home/z/.gradle/caches/transforms-3/a50afd02c35e80eb17bf6f1226802ebe/transformed/play-services-base-18.1.0/AndroidManifest.xml:20:9-22:45
+297            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+297-->[com.google.android.gms:play-services-base:18.1.0] /home/z/.gradle/caches/transforms-3/a50afd02c35e80eb17bf6f1226802ebe/transformed/play-services-base-18.1.0/AndroidManifest.xml:20:19-85
+298            android:exported="false"
+298-->[com.google.android.gms:play-services-base:18.1.0] /home/z/.gradle/caches/transforms-3/a50afd02c35e80eb17bf6f1226802ebe/transformed/play-services-base-18.1.0/AndroidManifest.xml:22:19-43
+299            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+299-->[com.google.android.gms:play-services-base:18.1.0] /home/z/.gradle/caches/transforms-3/a50afd02c35e80eb17bf6f1226802ebe/transformed/play-services-base-18.1.0/AndroidManifest.xml:21:19-78
+300
+301        <meta-data
+301-->[com.google.android.gms:play-services-basement:18.1.0] /home/z/.gradle/caches/transforms-3/4b4f6d07fd72d40259f70b2f96382cad/transformed/play-services-basement-18.1.0/AndroidManifest.xml:21:9-23:69
+302            android:name="com.google.android.gms.version"
+302-->[com.google.android.gms:play-services-basement:18.1.0] /home/z/.gradle/caches/transforms-3/4b4f6d07fd72d40259f70b2f96382cad/transformed/play-services-basement-18.1.0/AndroidManifest.xml:22:13-58
+303            android:value="@integer/google_play_services_version" />
+303-->[com.google.android.gms:play-services-basement:18.1.0] /home/z/.gradle/caches/transforms-3/4b4f6d07fd72d40259f70b2f96382cad/transformed/play-services-basement-18.1.0/AndroidManifest.xml:23:13-66
+304
+305        <receiver
+305-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/z/.gradle/caches/transforms-3/ee6c8cfea159ae35099495dc99959c52/transformed/profileinstaller-1.3.0/AndroidManifest.xml:34:9-52:20
+306            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+306-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/z/.gradle/caches/transforms-3/ee6c8cfea159ae35099495dc99959c52/transformed/profileinstaller-1.3.0/AndroidManifest.xml:35:13-76
+307            android:directBootAware="false"
+307-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/z/.gradle/caches/transforms-3/ee6c8cfea159ae35099495dc99959c52/transformed/profileinstaller-1.3.0/AndroidManifest.xml:36:13-44
+308            android:enabled="true"
+308-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/z/.gradle/caches/transforms-3/ee6c8cfea159ae35099495dc99959c52/transformed/profileinstaller-1.3.0/AndroidManifest.xml:37:13-35
+309            android:exported="true"
+309-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/z/.gradle/caches/transforms-3/ee6c8cfea159ae35099495dc99959c52/transformed/profileinstaller-1.3.0/AndroidManifest.xml:38:13-36
+310            android:permission="android.permission.DUMP" >
+310-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/z/.gradle/caches/transforms-3/ee6c8cfea159ae35099495dc99959c52/transformed/profileinstaller-1.3.0/AndroidManifest.xml:39:13-57
+311            <intent-filter>
+311-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/z/.gradle/caches/transforms-3/ee6c8cfea159ae35099495dc99959c52/transformed/profileinstaller-1.3.0/AndroidManifest.xml:40:13-42:29
+312                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+312-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/z/.gradle/caches/transforms-3/ee6c8cfea159ae35099495dc99959c52/transformed/profileinstaller-1.3.0/AndroidManifest.xml:41:17-91
+312-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/z/.gradle/caches/transforms-3/ee6c8cfea159ae35099495dc99959c52/transformed/profileinstaller-1.3.0/AndroidManifest.xml:41:25-88
+313            </intent-filter>
+314            <intent-filter>
+314-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/z/.gradle/caches/transforms-3/ee6c8cfea159ae35099495dc99959c52/transformed/profileinstaller-1.3.0/AndroidManifest.xml:43:13-45:29
+315                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+315-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/z/.gradle/caches/transforms-3/ee6c8cfea159ae35099495dc99959c52/transformed/profileinstaller-1.3.0/AndroidManifest.xml:44:17-85
+315-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/z/.gradle/caches/transforms-3/ee6c8cfea159ae35099495dc99959c52/transformed/profileinstaller-1.3.0/AndroidManifest.xml:44:25-82
+316            </intent-filter>
+317            <intent-filter>
+317-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/z/.gradle/caches/transforms-3/ee6c8cfea159ae35099495dc99959c52/transformed/profileinstaller-1.3.0/AndroidManifest.xml:46:13-48:29
+318                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+318-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/z/.gradle/caches/transforms-3/ee6c8cfea159ae35099495dc99959c52/transformed/profileinstaller-1.3.0/AndroidManifest.xml:47:17-88
+318-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/z/.gradle/caches/transforms-3/ee6c8cfea159ae35099495dc99959c52/transformed/profileinstaller-1.3.0/AndroidManifest.xml:47:25-85
+319            </intent-filter>
+320            <intent-filter>
+320-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/z/.gradle/caches/transforms-3/ee6c8cfea159ae35099495dc99959c52/transformed/profileinstaller-1.3.0/AndroidManifest.xml:49:13-51:29
+321                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+321-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/z/.gradle/caches/transforms-3/ee6c8cfea159ae35099495dc99959c52/transformed/profileinstaller-1.3.0/AndroidManifest.xml:50:17-95
+321-->[androidx.profileinstaller:profileinstaller:1.3.0] /home/z/.gradle/caches/transforms-3/ee6c8cfea159ae35099495dc99959c52/transformed/profileinstaller-1.3.0/AndroidManifest.xml:50:25-92
+322            </intent-filter>
+323        </receiver>
+324
+325        <service
+325-->[com.google.android.datatransport:transport-backend-cct:3.1.8] /home/z/.gradle/caches/transforms-3/aea428acd8f87c1fd8ea45aa4a1a941d/transformed/transport-backend-cct-3.1.8/AndroidManifest.xml:28:9-34:19
+326            android:name="com.google.android.datatransport.runtime.backends.TransportBackendDiscovery"
+326-->[com.google.android.datatransport:transport-backend-cct:3.1.8] /home/z/.gradle/caches/transforms-3/aea428acd8f87c1fd8ea45aa4a1a941d/transformed/transport-backend-cct-3.1.8/AndroidManifest.xml:29:13-103
+327            android:exported="false" >
+327-->[com.google.android.datatransport:transport-backend-cct:3.1.8] /home/z/.gradle/caches/transforms-3/aea428acd8f87c1fd8ea45aa4a1a941d/transformed/transport-backend-cct-3.1.8/AndroidManifest.xml:30:13-37
+328            <meta-data
+328-->[com.google.android.datatransport:transport-backend-cct:3.1.8] /home/z/.gradle/caches/transforms-3/aea428acd8f87c1fd8ea45aa4a1a941d/transformed/transport-backend-cct-3.1.8/AndroidManifest.xml:31:13-33:39
+329                android:name="backend:com.google.android.datatransport.cct.CctBackendFactory"
+329-->[com.google.android.datatransport:transport-backend-cct:3.1.8] /home/z/.gradle/caches/transforms-3/aea428acd8f87c1fd8ea45aa4a1a941d/transformed/transport-backend-cct-3.1.8/AndroidManifest.xml:32:17-94
+330                android:value="cct" />
+330-->[com.google.android.datatransport:transport-backend-cct:3.1.8] /home/z/.gradle/caches/transforms-3/aea428acd8f87c1fd8ea45aa4a1a941d/transformed/transport-backend-cct-3.1.8/AndroidManifest.xml:33:17-36
+331        </service>
+332        <service
+332-->[com.google.android.datatransport:transport-runtime:3.1.8] /home/z/.gradle/caches/transforms-3/9ced051dde6ca04f2db762e7dcd33126/transformed/transport-runtime-3.1.8/AndroidManifest.xml:26:9-30:19
+333            android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService"
+333-->[com.google.android.datatransport:transport-runtime:3.1.8] /home/z/.gradle/caches/transforms-3/9ced051dde6ca04f2db762e7dcd33126/transformed/transport-runtime-3.1.8/AndroidManifest.xml:27:13-117
+334            android:exported="false"
+334-->[com.google.android.datatransport:transport-runtime:3.1.8] /home/z/.gradle/caches/transforms-3/9ced051dde6ca04f2db762e7dcd33126/transformed/transport-runtime-3.1.8/AndroidManifest.xml:28:13-37
+335            android:permission="android.permission.BIND_JOB_SERVICE" >
+335-->[com.google.android.datatransport:transport-runtime:3.1.8] /home/z/.gradle/caches/transforms-3/9ced051dde6ca04f2db762e7dcd33126/transformed/transport-runtime-3.1.8/AndroidManifest.xml:29:13-69
+336        </service>
+337
+338        <receiver
+338-->[com.google.android.datatransport:transport-runtime:3.1.8] /home/z/.gradle/caches/transforms-3/9ced051dde6ca04f2db762e7dcd33126/transformed/transport-runtime-3.1.8/AndroidManifest.xml:32:9-34:40
+339            android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.AlarmManagerSchedulerBroadcastReceiver"
+339-->[com.google.android.datatransport:transport-runtime:3.1.8] /home/z/.gradle/caches/transforms-3/9ced051dde6ca04f2db762e7dcd33126/transformed/transport-runtime-3.1.8/AndroidManifest.xml:33:13-132
+340            android:exported="false" />
+340-->[com.google.android.datatransport:transport-runtime:3.1.8] /home/z/.gradle/caches/transforms-3/9ced051dde6ca04f2db762e7dcd33126/transformed/transport-runtime-3.1.8/AndroidManifest.xml:34:13-37
+341    </application>
+342
+343</manifest>
