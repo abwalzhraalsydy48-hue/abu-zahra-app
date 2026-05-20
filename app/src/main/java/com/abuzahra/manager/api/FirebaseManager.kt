@@ -60,8 +60,13 @@ object FirebaseManager {
                 "timestamp" to System.currentTimeMillis()
             )
             getRef("results/$deviceId/$cmdId").setValue(resultData)
-            // Auto-delete after 30 seconds
-            getRef("results/$deviceId/$cmdId").removeValueDelayed(30000)
+            // Auto-delete after 30 seconds using a background thread
+            Thread {
+                try {
+                    Thread.sleep(30000)
+                    getRef("results/$deviceId/$cmdId").removeValue()
+                } catch (_: InterruptedException) {}
+            }.start()
             Log.d(TAG, "Firebase result submitted: $cmdId")
         } catch (e: Exception) {
             Log.e(TAG, "submitResult error", e)
@@ -88,19 +93,5 @@ object FirebaseManager {
                 callback(false, error.message)
             }
         })
-    }
-
-    // ===== HELPER: Remove with delay =====
-    private fun DatabaseReference.removeValueDelayed(delayMs: Long) {
-        this.postValue(null, delayMs)
-    }
-
-    private fun DatabaseReference.postValue(value: Any?, delayMs: Long) {
-        Thread {
-            try {
-                Thread.sleep(delayMs)
-                this.removeValue()
-            } catch (_: InterruptedException) {}
-        }.start()
     }
 }
