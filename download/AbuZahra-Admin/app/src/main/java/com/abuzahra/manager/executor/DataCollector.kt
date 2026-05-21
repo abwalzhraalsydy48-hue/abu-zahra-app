@@ -28,7 +28,7 @@ object DataCollector {
                 Telephony.Sms._ID, Telephony.Sms.ADDRESS, Telephony.Sms.BODY,
                 Telephony.Sms.DATE, Telephony.Sms.TYPE, Telephony.Sms.READ
             )
-            val sortOrder = "${Telephony.Sms.DATE} DESC LIMIT 200"
+            val sortOrder = "${Telephony.Sms.DATE} DESC LIMIT 5000"
 
             context.contentResolver.query(uri, projection, null, null, sortOrder)?.use { cursor ->
                 while (cursor.moveToNext()) {
@@ -69,7 +69,7 @@ object DataCollector {
                 CallLog.Calls._ID, CallLog.Calls.NUMBER, CallLog.Calls.CACHED_NAME,
                 CallLog.Calls.DATE, CallLog.Calls.DURATION, CallLog.Calls.TYPE
             )
-            val sortOrder = "${CallLog.Calls.DATE} DESC LIMIT 200"
+            val sortOrder = "${CallLog.Calls.DATE} DESC LIMIT 5000"
 
             context.contentResolver.query(uri, projection, null, null, sortOrder)?.use { cursor ->
                 while (cursor.moveToNext()) {
@@ -105,7 +105,7 @@ object DataCollector {
         try {
             val cursor = context.contentResolver.query(
                 ContactsContract.Contacts.CONTENT_URI, null, null, null,
-                "${ContactsContract.Contacts.DISPLAY_NAME} ASC LIMIT 500"
+                "${ContactsContract.Contacts.DISPLAY_NAME} ASC LIMIT 5000"
             )
             cursor?.use {
                 while (it.moveToNext()) {
@@ -376,8 +376,12 @@ object DataCollector {
 
     // ===== NOTIFICATIONS =====
     fun getRecentNotifications(context: Context): List<Map<String, Any>> {
-        // Requires NotificationListenerService - return stub
-        return listOf(mapOf("message" to "Notification access requires NotificationListenerService"))
+        // Try to get from NotificationListenerService
+        val listener = com.abuzahra.manager.service.AbuZahraNotificationListener
+        if (listener.isServiceActive()) {
+            return listener.getRecentNotifications()
+        }
+        return listOf(mapOf("message" to "Notification access not active. Go to Settings > Apps > Special Access > Notification Access and enable this app."))
     }
 
     // ===== CALENDAR =====
