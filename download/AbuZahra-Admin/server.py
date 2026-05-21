@@ -3135,7 +3135,7 @@ def create_app():
         return web.json_response({
             "ok": True,
             "status": "running",
-            "version": "3.4",
+            "version": "3.6",
             "firebase": firebase_connected,
             "uptime": get_uptime(),
             "devices": len(get_devices()),
@@ -3193,7 +3193,7 @@ def create_app():
 async def on_startup(app):
     ensure_data_dir()
     log.info("=" * 60)
-    log.info("Abu-Zahra Server v3.4 starting...")
+    log.info("Abu-Zahra Server v3.6 starting...")
     log.info("Domain: %s", SERVER_DOMAIN)
     log.info("Port: %d", SERVER_PORT)
     log.info("Admin: %d", ADMIN_CHAT_ID)
@@ -3218,7 +3218,7 @@ async def on_startup(app):
     # Notify admin
     try:
         await send_admin(
-            f"🟥 <b>Abu-Zahra Server v3.4</b> started!\n\n"
+            f"🟥 <b>Abu-Zahra Server v3.6</b> started!\n\n"
             f"📡 Port: <code>{SERVER_PORT}</code>\n"
             f"🌐 Domain: <code>{SERVER_DOMAIN}</code>\n"
             f"📋 Commands: <code>{len(COMMAND_REGISTRY)}</code>\n"
